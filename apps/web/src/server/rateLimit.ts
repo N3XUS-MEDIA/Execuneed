@@ -1,30 +1,20 @@
+import { getRedis } from './redis'
+
 /**
  * P1-L-059 — abuse protection for public writes.
  *
  * `createLeadAction` is an unauthenticated endpoint that writes personal data
- * to the database and creates work for Denise. Without a limit, one script can
- * fill the inbox with junk and bury real enquiries, which is a denial of
- * service against the practice rather than the server.
+ * and creates work for Denise. Without a limit, one script can fill the inbox
+ * with junk and bury real enquiries — a denial of service against the
+ * practice rather than the server.
  *
- * This is an in-memory fixed window, so it is PER INSTANCE. On a single
- * container that is genuinely effective; the moment the app runs more than one
- * instance, a determined caller gets N times the budget. That is an accepted
- * P1 trade-off — the alternative is standing up Redis before a site that does
- * not yet have a domain. `docs/plan/DECISIONS.md` records it, and the swap is
- * one function.
+ * Redis-backed when REDIS_URL is set, which it must be in production. The
+ * in-memory limiter below is the fallback, and on Vercel it is close to
+ * useless on its own: every serverless instance has its own memory, instances
+ * are ephemeral and plural, so a caller gets a fresh budget per cold start.
+ * It is kept for local development, for tests, and as a partial backstop if
+ * Redis is unreachable.
  */
-
-type Hit = { count: number; resetAt: number }
-
-const buckets = new Map<string, Hit>()
-
-/** Stop the map growing without bound on a long-lived process. */
-function sweep(now: number) {
-  if (buckets.size < 5_000) return
-  for (const [key, hit] of buckets) {
-    if (hit.resetAt <= now) buckets.delete(key)
-  }
-}
 
 export type RateLimitResult = {
   ok: boolean
@@ -32,9 +22,23 @@ export type RateLimitResult = {
   retryAfterSeconds: number
 }
 
-export function rateLimit(
+export type RateLimitOptions = { limit: number; windowMs: number }
+
+// ---------------------------------------------------------------- in-memory
+
+type Hit = { count: number; resetAt: number }
+const buckets = new Map<string, Hit>()
+
+function sweep(now: number) {
+  if (buckets.size < 5_000) return
+  for (const [key, hit] of buckets) {
+    if (hit.resetAt <= now) buckets.delete(key)
+  }
+}
+
+export function rateLimitMemory(
   key: string,
-  { limit, windowMs }: { limit: number; windowMs: number },
+  { limit, windowMs }: RateLimitOptions,
   now = Date.now(),
 ): RateLimitResult {
   sweep(now)
@@ -64,17 +68,62 @@ export function __resetRateLimits() {
   buckets.clear()
 }
 
+// -------------------------------------------------------------------- redis
+
+/**
+ * INCR and the expiry must be one operation. Doing them as two round trips
+ * leaves a window where a crash between them creates a key with no TTL, which
+ * would lock a caller out permanently.
+ */
+const SCRIPT = `
+local count = redis.call('INCR', KEYS[1])
+if count == 1 then
+  redis.call('PEXPIRE', KEYS[1], ARGV[1])
+end
+return {count, redis.call('PTTL', KEYS[1])}
+`
+
+export async function rateLimit(
+  key: string,
+  opts: RateLimitOptions,
+): Promise<RateLimitResult> {
+  const redis = getRedis()
+  if (!redis) return rateLimitMemory(key, opts)
+
+  try {
+    const [count, ttlMs] = (await redis.eval(
+      SCRIPT,
+      1,
+      `rl:${key}`,
+      String(opts.windowMs),
+    )) as [number, number]
+
+    if (count > opts.limit) {
+      return {
+        ok: false,
+        remaining: 0,
+        retryAfterSeconds: Math.max(1, Math.ceil(ttlMs / 1000)),
+      }
+    }
+
+    return { ok: true, remaining: opts.limit - count, retryAfterSeconds: 0 }
+  } catch {
+    // Redis is unreachable. Fall back to the in-memory limiter rather than
+    // failing open: weak protection beats none, and a Redis outage must not
+    // stop the practice receiving genuine enquiries.
+    return rateLimitMemory(key, opts)
+  }
+}
+
 /**
  * A household genuinely might send two enquiries — one for medical aid, one
  * for a bond. Five in ten minutes from one address is not that.
  *
  * The ceiling is overridable because an end-to-end suite submits dozens of
- * enquiries from a single address in under a minute and would otherwise be
- * throttled by this. The override exists for that and for load testing; it is
- * never set in production, where the default stands. The limiter's own
- * behaviour is covered by unit tests, so raising it for e2e loses no coverage.
+ * enquiries from a single address in under a minute. It is never set in
+ * production.
  */
-export const LEAD_CAPTURE_LIMIT = {
+export const LEAD_CAPTURE_LIMIT: RateLimitOptions = {
   limit: Number(process.env.LEAD_RATE_LIMIT_MAX ?? 5),
   windowMs: 10 * 60 * 1000,
 }
