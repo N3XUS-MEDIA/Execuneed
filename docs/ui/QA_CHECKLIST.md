@@ -83,8 +83,16 @@ Three real issues came out of the first run and are fixed:
   bare URL. Added, without an image — a stock placeholder would be worse than
   none.
 
-Re-run on the deployed preview once one exists. Local numbers do not account
-for real network latency or CDN behaviour.
+### Confirmed on the live deployment
+
+Re-run against `https://execuneed-gold.vercel.app` — real network, real CDN:
+
+| Page | Performance | Accessibility | Best practices | LCP | CLS |
+|---|---|---|---|---|---|
+| `/` | 97 | 100 | 100 | 2.1s | 0 |
+| `/cover-review` | 100 | 100 | 100 | 1.7s | 0 |
+
+No accessibility or best-practice failures. This item is closed.
 
 ## Manual — still to do
 
