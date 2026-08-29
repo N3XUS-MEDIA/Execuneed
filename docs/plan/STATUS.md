@@ -1,6 +1,6 @@
 # Status
 
-Phase: **P1 — foundation that can go live**
+Phase: **P1 live. P2 open for the two unblocked support tickets.**
 Board state: P0 done, P1 implemented and hardened, awaiting client answers before go-live
 Last updated: 2026-08-29
 
@@ -8,8 +8,10 @@ Last updated: 2026-08-29
 
 | Lane | Human | Focus | Status |
 |---|---|---|---|
-| Lead | Jared | P1-L-006 → P1-L-018 | done |
-| Support | Deacon | P1-S-032 polish, design pass, review | briefed on the workspace webhook |
+| Lead | Jared | P0 and P1 complete, deployed and verified | handed over, out of session budget |
+| Support | Deacon | design pass, manual QA, P2-S-043, P2-S-044 | **everything is yours** |
+
+Full brief: `docs/handoffs/2026-08-29-lead-to-support-p2.md`
 
 ## P1 live-done — verified
 
