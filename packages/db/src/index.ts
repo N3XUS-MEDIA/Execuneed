@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '../generated/client'
 
 /**
  * P0-L-003 — single Prisma client.
@@ -18,4 +18,4 @@ if (process.env.NODE_ENV !== 'production') {
   globalForPrisma.prisma = prisma
 }
 
-export * from '@prisma/client'
+export * from '../generated/client'
