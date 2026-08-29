@@ -33,7 +33,7 @@ export type CreateLeadOutcome =
 export async function createLeadAction(input: unknown): Promise<CreateLeadOutcome> {
   try {
     const ip = await clientIp()
-    const limit = rateLimit(`lead:${ip}`, LEAD_CAPTURE_LIMIT)
+    const limit = await rateLimit(`lead:${ip}`, LEAD_CAPTURE_LIMIT)
     if (!limit.ok) {
       throw new ActionFailure(
         actionError(
