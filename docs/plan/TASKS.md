@@ -431,7 +431,12 @@ P4-S-058; nothing is renumbered.
 
 ---
 
-## P2 backlog — do not start in P1
+## P2 — unlocked 2026-08-29
+
+P1 is live-done and verified in production, so `docs/dev/PHASE_UNLOCK.md`
+opens P2. Only two support tickets are genuinely startable; the rest wait on
+lead-lane work that does not exist yet. Do not claim a `backlog` ticket
+because it looks interesting — that is the failure mode the brief names.
 
 ### P2-L-033
 - owner: lead | status: backlog
@@ -496,11 +501,11 @@ P4-S-058; nothing is renumbered.
 - title: Vault upload UI
 
 ### P2-S-043
-- owner: support | status: backlog
+- owner: support | status: ready
 - title: Journal article templates (8 cornerstone)
 
 ### P2-S-044
-- owner: support | status: backlog
+- owner: support | status: ready
 - title: Digest email HTML
 
 ### P2-S-045
