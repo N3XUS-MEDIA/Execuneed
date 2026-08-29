@@ -7,6 +7,11 @@ if (!process.env.DATABASE_URL && existsSync(envFile)) {
   process.loadEnvFile(envFile)
 }
 
+// One source for the cron secret. The test signs its request with this and
+// the server under test validates against it; two defaults would silently
+// disagree, which is exactly what happened when CI set its own.
+process.env.CRON_SECRET ||= 'e2e-cron-secret'
+
 const PORT = Number(process.env.E2E_PORT ?? 3210)
 const baseURL = `http://127.0.0.1:${PORT}`
 
@@ -28,7 +33,7 @@ export default defineConfig({
     // The suite submits far more enquiries from one address than a person
     // ever would, so the public rate limit is raised here. Its real behaviour
     // is covered in src/server/rateLimit.test.ts.
-    env: { LEAD_RATE_LIMIT_MAX: '1000', CRON_SECRET: 'e2e-cron-secret' },
+    env: { LEAD_RATE_LIMIT_MAX: '1000', CRON_SECRET: process.env.CRON_SECRET },
     command: `pnpm exec next dev -p ${PORT}`,
     url: baseURL,
     reuseExistingServer: !process.env.CI,
