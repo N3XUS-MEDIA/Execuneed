@@ -12,18 +12,18 @@ export default function CoverReviewPage() {
 
       <div className="grid gap-10 lg:grid-cols-[1fr_20rem]">
         <Card className="order-2 lg:order-1">
-          <CardTitle>Tell us where to start</CardTitle>
+          <CardTitle as="h2">Tell us where to start</CardTitle>
           <CardBody className="mt-2 mb-6">{copy.review.next}</CardBody>
           <LeadForm source="web" />
         </Card>
 
         <aside className="order-1 flex flex-col gap-6 lg:order-2">
           <Card>
-            <CardTitle>Who this is for</CardTitle>
+            <CardTitle as="h2">Who this is for</CardTitle>
             <CardBody className="mt-2">{copy.review.who}</CardBody>
           </Card>
           <Card>
-            <CardTitle>What happens next</CardTitle>
+            <CardTitle as="h2">What happens next</CardTitle>
             <CardBody className="mt-2">
               <ol className="flex list-decimal flex-col gap-2 pl-4">
                 <li>We read what you sent and check nothing is missing.</li>

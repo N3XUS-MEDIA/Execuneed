@@ -55,12 +55,40 @@ runs all of it; the manual items below are the ones a machine cannot judge.
 | Unknown page returns a real 404, not a stack trace | pass |
 | Skip link is the first keyboard stop | pass |
 
+## Lighthouse — run against a local production build
+
+`pnpm build && pnpm --filter @execuneed/web exec next start -p 3300`, then
+Lighthouse against that. Numbers from `next dev` are meaningless; this is a
+real production bundle.
+
+| Page | Performance | Accessibility | Best practices | CLS |
+|---|---|---|---|---|
+| `/` | 100 | 100 | 100 | 0 |
+| `/cover-review` | 99 | 100 | 100 | 0 |
+| `/services` | 99 | 100 | 100 | 0 |
+| `/contact` | 99 | 100 | 100 | 0 |
+
+SEO scores 63 and that is correct: the only failing audit is "page is blocked
+from indexing", which is exactly what `ALLOW_INDEXING=false` is for. Expect it
+to jump once the legal wording is confirmed and indexing is switched on.
+
+Three real issues came out of the first run and are fixed:
+
+- A 404 on every page load — there was no favicon at all. `app/icon.svg` is a
+  placeholder monogram built from the design tokens; the real one comes with
+  the brand pack, which has not been received.
+- Heading order skipped from `h1` to `h3`. `CardTitle` now takes an `as` prop
+  and the pages where a card follows the page heading use `h2`.
+- No Open Graph tags, so a link shared on WhatsApp or LinkedIn rendered as a
+  bare URL. Added, without an image — a stock placeholder would be worse than
+  none.
+
+Re-run on the deployed preview once one exists. Local numbers do not account
+for real network latency or CDN behaviour.
+
 ## Manual — still to do
 
 These need a person, and several need answers from the practice first.
-
-- [ ] Lighthouse on the deployed preview. Not run locally: the numbers from
-      `next dev` are meaningless, and there is no deploy target yet.
 - [ ] Real content pass. The pages are correct but plain — photography, spacing
       and typographic rhythm are Deacon's next job.
 - [ ] Screen reader pass through the lead form (VoiceOver, iOS Safari).
