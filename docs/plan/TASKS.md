@@ -419,6 +419,16 @@ P4-S-058; nothing is renumbered.
   - constant-time comparison, no detail leaked on failure
   - still does not send; transport is P2
 
+### P1-S-069
+- owner: support | complexity: C1 | status: done
+- title: Discovery product taxonomy behind the approval gate
+- dependsOn: [P0-S-001]
+- files: apps/web/src/content/products.ts, apps/web/app/(public)/services/**
+- acceptance:
+  - always-visible copy names no plan, premium or discount
+  - benefit claims render only with a Marketing Support reference
+  - approval register exists and is version controlled
+
 ---
 
 ## P2 backlog — do not start in P1
@@ -430,6 +440,28 @@ P4-S-058; nothing is renumbered.
 ### P2-L-034
 - owner: lead | status: backlog
 - title: Inbound classifier + qualifier state machine
+
+### P2-L-070
+- owner: lead | status: backlog
+- title: Site concierge — capture, book, and answer from the approved corpus
+- dependsOn: [P1 live-done, P2-L-039]
+- acceptance:
+  - collects the qualifying fields and writes through createLeadAction, with
+    consent captured exactly as the web form does
+  - offers a booking slot and hands to a human
+  - answers ONLY from content with a stored Discovery approval reference, and
+    cites which page an answer came from
+  - refuses premium, plan-comparison and "what should I buy" questions and
+    routes them to an adviser; refusal is the default when the corpus does not
+    contain an answer
+  - carries the disclaimer from docs/compliance/DISCLAIMERS.md §Public AI
+  - never states a premium, names a plan as suitable, or gives a number that
+    could read as a quote
+- notes: |
+    Scope agreed with Jared 2026-08-29: capture and book, PLUS answering from
+    approved content only. Blocked on two things — P1 being live-done, and a
+    corpus that has actually been through Discovery Marketing Support. There
+    is no approved content yet, so the RAG half has nothing to read.
 
 ### P2-L-035
 - owner: lead | status: backlog
