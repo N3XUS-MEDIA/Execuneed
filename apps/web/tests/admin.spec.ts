@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, type Page } from '@playwright/test'
 import { PrismaClient } from '@execuneed/db'
 
 /**
@@ -10,7 +10,7 @@ import { PrismaClient } from '@execuneed/db'
 const DENISE = { email: 'denise@execuneed.co.za', password: process.env.SEED_DENISE_PASSWORD! }
 const CLIENT = { email: 'client@example.com', password: process.env.SEED_CLIENT_PASSWORD! }
 
-async function signIn(page: import('@playwright/test').Page, who: { email: string; password: string }) {
+async function signIn(page: Page, who: { email: string; password: string }) {
   await page.goto('/login')
   await page.getByLabel('Email').fill(who.email)
   await page.getByLabel('Password').fill(who.password)

@@ -65,6 +65,7 @@ export function LeadForm({ source = 'web' }: { source?: string }) {
         marketing: formData.get('marketing') === 'on',
         channels,
         source,
+        website: formData.get('website') || undefined,
       }
 
     startTransition(async () => {
@@ -99,6 +100,22 @@ export function LeadForm({ source = 'web' }: { source?: string }) {
           {error.message}
         </Alert>
       ) : null}
+
+      {/*
+        Honeypot. Off-screen rather than display:none, which some bots detect,
+        and hidden from assistive tech so nobody real is ever asked to fill it.
+      */}
+      <div aria-hidden="true" className="absolute left-[-9999px] h-0 w-0 overflow-hidden">
+        <label htmlFor={`${formId}-website`}>Leave this field empty</label>
+        <input
+          id={`${formId}-website`}
+          name="website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+        />
+      </div>
 
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5">

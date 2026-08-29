@@ -1,5 +1,6 @@
 'use server'
 
+import { revalidatePath } from 'next/cache'
 import { prisma } from '@execuneed/db'
 import { requireStaff } from '@/server/auth'
 
@@ -53,4 +54,22 @@ export async function completeTaskAction(id: string): Promise<void> {
       actorId: staff.id,
     },
   })
+
+  revalidatePath('/admin/tasks')
 }
+
+/** P1-S-064 — the task board. Open work first, oldest due date at the top. */
+export async function listTasksAction() {
+  await requireStaff()
+
+  return prisma.task.findMany({
+    include: {
+      assignee: { select: { id: true, name: true } },
+      lead: { include: { person: { select: { firstName: true, lastName: true } } } },
+    },
+    orderBy: [{ status: 'asc' }, { dueAt: 'asc' }, { createdAt: 'asc' }],
+    take: 200,
+  })
+}
+
+export type TaskListItem = Awaited<ReturnType<typeof listTasksAction>>[number]

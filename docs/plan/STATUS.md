@@ -1,7 +1,7 @@
 # Status
 
 Phase: **P1 — foundation that can go live**
-Board state: P0 done, P1 implemented and passing, awaiting client answers before go-live
+Board state: P0 done, P1 implemented and hardened, awaiting client answers before go-live
 Last updated: 2026-08-29
 
 ## Focus
@@ -28,10 +28,26 @@ Public site: footer disclaimer renders from `OrganisationSettings`; sticky
 WhatsApp hides itself while no number is confirmed; legal pages are `noindex`
 unconditionally; every other route is `noindex` while `ALLOW_INDEXING=false`.
 
+## Production readiness — done
+
+P1-L-059 to P1-L-065, added after the feature work:
+
+- Rate limit and honeypot on the only unauthenticated write
+- CSP and the security header baseline; no `unsafe-eval` in production
+- Cookie notice with a real gate — absence of a decision is not consent
+- `robots.txt` and sitemap gated on `ALLOW_INDEXING`
+- Error, not-found and loading states that leak nothing
+- Skip link
+- Admin tasks page wired to `completeTaskAction`
+- `docs/ops/DEPLOYMENT.md` with the go-live gate and known production limits
+
+108 unit and integration tests, 47 Playwright tests.
+
 ## Not go-live ready — and why
 
-The build is done. The **content is not cleared**. `ALLOW_INDEXING` must stay
-`false` until `docs/product/CLIENT_ANSWERS.md` is filled in.
+The build is done and hardened. The **content is not cleared**.
+`ALLOW_INDEXING` must stay `false` until `docs/product/CLIENT_ANSWERS.md` is
+filled in. A preview deploy is fine and is what Lighthouse needs.
 
 ## Blocked on Execuneed
 
