@@ -56,7 +56,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - primitive list matches P0-S-001
 
 ### P0-S-001
-- owner: support | complexity: C1 | status: ready
+- owner: support | complexity: C1 | status: done
 - title: Implement tokens + primitives
 - files: packages/ui/**
 - dependsOn: [P0-L-002, P0-L-005]
@@ -65,7 +65,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - no second colour system
 
 ### P0-S-002
-- owner: support | complexity: C1 | status: backlog
+- owner: support | complexity: C1 | status: done
 - title: Public layout header footer disclaimer sticky WhatsApp
 - files: apps/web/app/(public)/layout.tsx, apps/web/src/ui/layout/**
 - dependsOn: [P0-S-001]
@@ -74,7 +74,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - sticky WhatsApp link present on mobile
 
 ### P0-S-003
-- owner: support | complexity: C1 | status: backlog
+- owner: support | complexity: C1 | status: done
 - title: Admin shell sidebar topbar empty states
 - files: apps/web/app/(admin)/layout.tsx, apps/web/src/ui/admin/shell.tsx
 - dependsOn: [P0-S-001, P0-L-004]
@@ -83,7 +83,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - empty state component exists
 
 ### P0-S-004
-- owner: support | complexity: C0 | status: ready
+- owner: support | complexity: C0 | status: done
 - title: Confirm copy deck coverage for P1 pages
 - files: docs/ui/COPY_DECK.md
 - dependsOn: []
