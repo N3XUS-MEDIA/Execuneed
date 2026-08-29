@@ -2,6 +2,49 @@
 
 Append-only. Lead writes. Newest first.
 
+## 2026-08-29 — Admin lives at a real `/admin` URL segment
+
+Next route groups do not contribute to the URL. `app/(admin)/leads/page.tsx`
+served `/leads`, which collided with the public namespace and meant the
+`matcher: ['/admin/:path*']` in `middleware.ts` matched nothing at all.
+
+Admin pages now sit at `app/(admin)/admin/**`. The group is kept so every
+`apps/web/app/(admin)/**` glob in `LANES.md` still holds, and the URLs match
+what `DEFINITION_OF_DONE.md` promises Denise.
+
+## 2026-08-29 — Auth.js v5, credentials, JWT sessions, no database adapter
+
+Staff sign in with email + password against the existing `User.passwordHash`.
+Sessions are JWT.
+
+Deliberately no Auth.js Prisma adapter: it needs Account / Session /
+VerificationToken tables that are not in the P1 schema, and `ARCHITECTURE.md`
+fixes the P1 entity list at nine. Magic link / OTP for the client portal is
+`P3-L-048`; that is the right moment to take the schema change.
+
+`NEXTAUTH_URL` is removed from `.env.example`. Auth.js v5 infers the host from
+request headers, and a hardcoded value rewrote `req.url` inside middleware so
+every guard redirect pointed at port 3000 regardless of the real origin.
+
+## 2026-08-29 — Design tokens are the only palette
+
+`packages/ui/src/tokens.ts` feeds `packages/ui/src/tailwind-preset.ts`, which
+`apps/web/tailwind.config.ts` consumes as a Tailwind preset. There is no second
+place to define a colour.
+
+The preset lives in `packages/ui` rather than `packages/config` as first
+sketched: the tokens are already there, and putting a runtime import of
+`@execuneed/ui` into `@execuneed/config` would make the two packages circular.
+`packages/config` holds the tsconfig base and the ESLint flat config only.
+
+## 2026-08-29 — Development database is Supabase, eu-central-1
+
+Project `execuneed-dev` (`kbjkorekynnatyzghhyy`), separate from the Syrax OS
+Platform project. Supabase has no `af-south-1` region, so client data sits in
+Frankfurt. `docs/compliance/RULES.md` §POPIA asks for data residency to be
+documented — this is that record. Production hosting is a separate decision and
+is not made yet.
+
 ## 2026-08-29 — Dual lane build
 
 Jared is lead. Deacon is support. Communication is the existing development workspace webhook plus `docs/plan/*`.

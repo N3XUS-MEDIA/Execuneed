@@ -21,3 +21,4 @@ apps/web/.next
 .claude/settings.local.json
 uploads
 tmp
+next-env.d.ts

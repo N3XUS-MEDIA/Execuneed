@@ -34,7 +34,21 @@ What exists and who owns it.
 
 | File | Owner | Phase |
 |---|---|---|
+| packages/config/tsconfig.base.json | lead | P0-L-002 |
+| packages/config/eslint.config.mjs | lead | P0-L-002 |
+| apps/web/app/layout.tsx | lead | P0-L-002 |
+| apps/web/app/globals.css | lead | P0-L-002 |
+| apps/web/tailwind.config.ts | lead | P0-L-002 |
 | packages/db/prisma/schema.prisma | lead | P0-L-003 |
+| packages/db/prisma/migrations/** | lead | P0-L-003 |
+| packages/db/src/index.ts | lead | P0-L-003 |
+| apps/web/src/server/auth.ts | lead | P0-L-004 |
+| apps/web/src/server/auth.config.ts | lead | P0-L-004 |
+| apps/web/src/types/next-auth.d.ts | lead | P0-L-004 |
+| apps/web/middleware.ts | lead | P0-L-004 |
+| apps/web/app/(auth)/** | lead | P0-L-004 |
+| apps/web/app/api/auth/** | lead | P0-L-004 |
+| packages/ui/src/tailwind-preset.ts | lead | P0-L-005 |
 | packages/ui/src/tokens.ts | lead defined / support implement | P0 |
 | apps/web/src/contracts/types.ts | lead | P0 |
 | apps/web/src/domain/leads/score.ts | lead | P1-L-014 started |

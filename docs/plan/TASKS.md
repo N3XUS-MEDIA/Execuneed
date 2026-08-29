@@ -9,7 +9,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
 ## P0 — Structure
 
 ### P0-L-001
-- owner: lead | complexity: C4 | status: ready
+- owner: lead | complexity: C4 | status: done
 - title: Confirm plan files are the working set
 - files: docs/plan/**
 - dependsOn: []
@@ -18,7 +18,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - webhook protocol documented
 
 ### P0-L-002
-- owner: lead | complexity: C4 | status: ready
+- owner: lead | complexity: C4 | status: done
 - title: Scaffold monorepo, tooling, env example, CI
 - files: package.json, pnpm-workspace.yaml, apps/web, packages/*, .github/workflows/ci.yml
 - dependsOn: []
@@ -28,7 +28,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - lint workflow exists
 
 ### P0-L-003
-- owner: lead | complexity: C4 | status: backlog
+- owner: lead | complexity: C4 | status: done
 - title: Prisma baseline for P1 entities only
 - files: packages/db/prisma/schema.prisma
 - dependsOn: [P0-L-002]
@@ -37,7 +37,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - migrate on empty database
 
 ### P0-L-004
-- owner: lead | complexity: C4 | status: backlog
+- owner: lead | complexity: C4 | status: done
 - title: Auth + roles + admin guard
 - files: apps/web/src/server/auth.ts, apps/web/middleware.ts, apps/web/app/(auth)/**
 - dependsOn: [P0-L-003]
@@ -47,7 +47,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - client role cannot open /admin
 
 ### P0-L-005
-- owner: lead | complexity: C2 | status: ready
+- owner: lead | complexity: C2 | status: done
 - title: Design tokens and primitive list
 - files: packages/ui/src/tokens.ts, docs/ui/PRIMITIVES.md
 - dependsOn: []
@@ -56,7 +56,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - primitive list matches P0-S-001
 
 ### P0-S-001
-- owner: support | complexity: C1 | status: backlog
+- owner: support | complexity: C1 | status: ready
 - title: Implement tokens + primitives
 - files: packages/ui/**
 - dependsOn: [P0-L-002, P0-L-005]
@@ -108,7 +108,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
 ### P1-L-007
 - owner: lead | complexity: C4 | status: backlog
 - title: createLeadAction + validation + audit
-- dependsOn: [P0-L-003, P1-L-008]
+- dependsOn: [P0-L-003, P1-L-008, P1-L-013]
 - files: apps/web/src/server/leads/createLeadAction.ts
 - acceptance:
   - rejects missing enquiry consent

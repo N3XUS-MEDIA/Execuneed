@@ -3,18 +3,27 @@ on:
   pull_request:
   push:
     branches: [main]
+
 jobs:
-  lint:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # No `version:` here on purpose — the action reads packageManager from
+      # package.json, and specifying both is a hard error.
       - uses: pnpm/action-setup@v4
-        with:
-          version: 9
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
-      - run: pnpm install --frozen-lockfile || pnpm install
+      - run: pnpm install --frozen-lockfile
+      # packages/db typechecks against the generated client, so this must run
+      # before typecheck. It reads the schema only and needs no live database.
+      - run: pnpm db:generate
       - run: pnpm lint
       - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+        env:
+          AUTH_SECRET: ci-placeholder-secret-not-used-at-runtime
+          DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
