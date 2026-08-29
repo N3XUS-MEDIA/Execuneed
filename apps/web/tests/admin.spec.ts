@@ -133,28 +133,44 @@ test.describe('working a lead', () => {
     await expect(page.getByText('Send the pre-meeting checklist')).toBeVisible()
   })
 
-  test('marking a lead lost requires a reason', async ({ page }) => {
+  async function submitLead(page: Page, first: string, last: string, mobile: string) {
     await page.goto('/cover-review')
-    await page.getByLabel('First name').fill('Lost')
-    await page.getByLabel('Last name').fill('Cause')
-    await page.getByLabel('Mobile number').fill('0824446661')
+    await page.getByLabel('First name').fill(first)
+    await page.getByLabel('Last name').fill(last)
+    await page.getByLabel('Mobile number').fill(mobile)
     await page.getByLabel('Please contact me about this enquiry.').click()
     await page.getByRole('button', { name: 'Request a review' }).click()
+    await expect(page).toHaveURL(/thanks/)
+  }
 
+  // Two separate leads rather than two attempts on one page. Submitting twice
+  // in a row races the re-render from the first attempt against the second
+  // selection, which made this flaky in CI and not locally.
+  test('marking a lead lost is refused without a reason', async ({ page }) => {
+    await submitLead(page, 'Lost', 'NoReason', '0824446661')
     await signIn(page, DENISE)
-    await page.getByRole('link', { name: 'Lost Cause' }).click()
-    await expect(page.getByRole('heading', { name: 'Lost Cause' })).toBeVisible()
+    await page.getByRole('link', { name: 'Lost NoReason' }).click()
+    await expect(page.getByRole('heading', { name: 'Lost NoReason' })).toBeVisible()
 
-    // No reason: refused, and the status is unchanged.
     await page.getByLabel('Status').selectOption('lost')
     await page.getByRole('button', { name: 'Update status' }).click()
-    await expect(page.getByText('Status changed from new to lost')).toHaveCount(0)
 
-    // With a reason: accepted, and the reason lands on the timeline where it
-    // is searchable rather than disappearing into someone's memory.
+    // The timeline is the proof: still only the original enquiry.
+    await expect(page.getByText(/Enquiry via website/)).toBeVisible()
+    await expect(page.getByText(/Status changed from new to lost/)).toHaveCount(0)
+  })
+
+  test('marking a lead lost records the reason on the timeline', async ({ page }) => {
+    await submitLead(page, 'Lost', 'WithReason', '0824446662')
+    await signIn(page, DENISE)
+    await page.getByRole('link', { name: 'Lost WithReason' }).click()
+    await expect(page.getByRole('heading', { name: 'Lost WithReason' })).toBeVisible()
+
     await page.getByLabel('Status').selectOption('lost')
     await page.getByLabel(/Reason/).fill('Went direct to Discovery')
     await page.getByRole('button', { name: 'Update status' }).click()
+
+    // The reason stays searchable on the file instead of living in a memory.
     await expect(page.getByText(/Reason: Went direct to Discovery/)).toBeVisible()
   })
 
