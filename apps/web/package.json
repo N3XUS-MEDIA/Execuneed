@@ -1,0 +1,12 @@
+{
+  "name": "@execuneed/web",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "lint": "echo \"lint in P0-L-002\"",
+    "typecheck": "echo \"typecheck in P0-L-002\"",
+    "test": "echo \"tests in P1-S-031\""
+  }
+}

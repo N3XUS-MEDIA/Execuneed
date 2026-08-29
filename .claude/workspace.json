@@ -1,0 +1,9 @@
+{
+  "project": "execuneed",
+  "webhookEnvKeys": ["DEV_WORKSPACE_WEBHOOK_URL", "N3XUS_DEV_WEBHOOK_URL"],
+  "roles": ["lead", "support"],
+  "humans": {
+    "lead": "Jared",
+    "support": "Deacon"
+  }
+}

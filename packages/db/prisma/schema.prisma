@@ -1,0 +1,200 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  superadmin
+  compliance
+  adviser
+  admin
+  client
+}
+
+enum LeadSource {
+  web
+  whatsapp
+  phone
+  referral
+  ads
+  review_campaign
+  event
+}
+
+enum LeadIntent {
+  cover_review
+  medical_aid
+  life
+  income
+  invest_ra
+  insure
+  bank
+  claim
+  service
+  employer
+}
+
+enum LeadStatus {
+  new
+  qualified
+  booked
+  advice_in_progress
+  submitted
+  won
+  lost
+  nurture
+}
+
+enum TaskStatus {
+  open
+  done
+  cancelled
+}
+
+enum InteractionDirection {
+  inbound
+  outbound
+  system
+}
+
+model OrganisationSettings {
+  id                     String  @id @default(cuid())
+  legalName              String
+  tradingName            String
+  disclaimer             String  @db.Text
+  phoneDisplay           String
+  whatsappE164           String
+  email                  String
+  addressLine1           String
+  addressLine2           String?
+  city                   String
+  postalCode             String
+  fspNumber              String?
+  ncrNumber              String?
+  discoveryJuristicText  String  @db.Text
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String?
+  role         Role
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  assignedLeads Lead[]  @relation("AssignedLeads")
+  assignedTasks Task[]  @relation("AssignedTasks")
+  auditEvents  AuditEvent[]
+}
+
+model Household {
+  id            String         @id @default(cuid())
+  label         String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  people        Person[]
+  leads         Lead[]
+  tasks         Task[]
+  interactions  Interaction[]
+}
+
+model Person {
+  id           String         @id @default(cuid())
+  householdId  String?
+  household    Household?     @relation(fields: [householdId], references: [id])
+  firstName    String
+  lastName     String?
+  mobile       String
+  email        String?
+  suburb       String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  leads        Lead[]
+  consents     Consent[]
+  interactions Interaction[]
+}
+
+model Lead {
+  id                 String         @id @default(cuid())
+  personId           String
+  person             Person         @relation(fields: [personId], references: [id])
+  householdId        String?
+  household          Household?     @relation(fields: [householdId], references: [id])
+  source             LeadSource     @default(web)
+  intent             LeadIntent
+  status             LeadStatus     @default(new)
+  message            String?        @db.Text
+  lifeEvents         String[]
+  existingDiscovery  Boolean?
+  adults             Int?
+  children           Int?
+  score              Int            @default(0)
+  slaDueAt           DateTime
+  assignedToId       String?
+  assignedTo         User?          @relation("AssignedLeads", fields: [assignedToId], references: [id])
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  consents           Consent[]
+  tasks              Task[]
+  interactions       Interaction[]
+}
+
+model Consent {
+  id                 String   @id @default(cuid())
+  personId           String
+  person             Person   @relation(fields: [personId], references: [id])
+  leadId             String?
+  lead               Lead?    @relation(fields: [leadId], references: [id])
+  contactForEnquiry  Boolean
+  marketing          Boolean
+  channels           String[]
+  capturedAt         DateTime @default(now())
+  source             String
+}
+
+model Task {
+  id           String      @id @default(cuid())
+  leadId       String?
+  lead         Lead?       @relation(fields: [leadId], references: [id])
+  householdId  String?
+  household    Household?  @relation(fields: [householdId], references: [id])
+  title        String
+  status       TaskStatus  @default(open)
+  dueAt        DateTime?
+  assigneeId   String?
+  assignee     User?       @relation("AssignedTasks", fields: [assigneeId], references: [id])
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model Interaction {
+  id           String                 @id @default(cuid())
+  leadId       String?
+  lead         Lead?                  @relation(fields: [leadId], references: [id])
+  householdId  String?
+  household    Household?             @relation(fields: [householdId], references: [id])
+  personId     String?
+  person       Person?                @relation(fields: [personId], references: [id])
+  channel      String
+  direction    InteractionDirection
+  body         String                 @db.Text
+  createdAt    DateTime               @default(now())
+}
+
+model AuditEvent {
+  id         String   @id @default(cuid())
+  actorId    String?
+  actor      User?    @relation(fields: [actorId], references: [id])
+  action     String
+  entityType String
+  entityId   String
+  meta       Json?
+  createdAt  DateTime @default(now())
+}

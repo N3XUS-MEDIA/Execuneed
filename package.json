@@ -1,0 +1,17 @@
+{
+  "name": "execuneed",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Execuneed website and practice platform — N3XUS Media",
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "dev": "pnpm --filter @execuneed/web dev",
+    "build": "pnpm --filter @execuneed/web build",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "db:generate": "pnpm --filter @execuneed/db generate",
+    "db:migrate": "pnpm --filter @execuneed/db migrate",
+    "db:seed": "pnpm --filter @execuneed/db seed"
+  }
+}
