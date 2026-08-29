@@ -409,6 +409,16 @@ P4-S-058; nothing is renumbered.
   - move, assign, log a conversation, raise a task
   - each write refreshes what the person is looking at
 
+### P1-L-068
+- owner: lead | complexity: C2 | status: done
+- title: Scheduled trigger for the daily digest
+- dependsOn: [P1-L-016]
+- files: apps/web/app/api/cron/daily-digest/route.ts, vercel.json
+- acceptance:
+  - refuses without a secret rather than defaulting open
+  - constant-time comparison, no detail leaked on failure
+  - still does not send; transport is P2
+
 ---
 
 ## P2 backlog — do not start in P1

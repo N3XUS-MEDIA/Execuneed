@@ -28,7 +28,7 @@ export default defineConfig({
     // The suite submits far more enquiries from one address than a person
     // ever would, so the public rate limit is raised here. Its real behaviour
     // is covered in src/server/rateLimit.test.ts.
-    env: { LEAD_RATE_LIMIT_MAX: '1000' },
+    env: { LEAD_RATE_LIMIT_MAX: '1000', CRON_SECRET: 'e2e-cron-secret' },
     command: `pnpm exec next dev -p ${PORT}`,
     url: baseURL,
     reuseExistingServer: !process.env.CI,
