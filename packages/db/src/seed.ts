@@ -16,13 +16,16 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
+/**
+ * Internal note only. `OrganisationSettings.disclaimer` is never rendered on a
+ * public page — see the comment on discoveryJuristicText below for why that
+ * distinction matters.
+ */
 const NEEDS_LEGAL =
-  'NEEDS_LEGAL — placeholder. Execuneed Financial Services is a juristic ' +
-  'representative of [DISCOVERY ENTITY], registration number [REG NO], a ' +
-  'registered long-term insurer and an authorised financial services and ' +
-  'registered credit provider, NCR Reg No. [NCR NO]. Product rules, terms and ' +
-  'conditions apply. Confirm exact wording with the key individual and ' +
-  'Discovery Marketing Support before this page is indexed.'
+  'NEEDS_LEGAL — not yet confirmed. The juristic representative wording, the ' +
+  'Discovery entity and its registration number, the FSP number and the NCR ' +
+  'number are all outstanding. See docs/product/CLIENT_ANSWERS.md. Fill ' +
+  'discoveryJuristicText with the confirmed sentence before ALLOW_INDEXING.'
 
 function password(envKey: string): { plain: string; generated: boolean } {
   const fromEnv = process.env[envKey]
@@ -42,7 +45,15 @@ async function main() {
         legalName: 'NEEDS_LEGAL — confirm registered entity name',
         tradingName: 'Execuneed Financial Services',
         disclaimer: NEEDS_LEGAL,
-        discoveryJuristicText: NEEDS_LEGAL,
+        // Deliberately empty, NOT the placeholder above.
+        //
+        // This field is rendered in the public footer. Seeding it with
+        // placeholder text would publish "juristic representative of
+        // [DISCOVERY ENTITY] ... NCR Reg No. [NCR NO]" on a financial services
+        // site — worse than showing nothing, and exactly the kind of thing a
+        // regulator would ask about. The Disclaimer component renders nothing
+        // when this is empty in production, and shouts in development.
+        discoveryJuristicText: '',
         phoneDisplay: '021 552 8989',
         // Blank on purpose. The number in the old .env.example looked like the
         // landline with a mobile prefix attached. The sticky WhatsApp button
