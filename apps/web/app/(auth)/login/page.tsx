@@ -1,10 +1,19 @@
 import { redirect } from 'next/navigation'
+import { AuthError } from 'next-auth'
+import { Alert, Button, Card, Input } from '@execuneed/ui'
 import { signIn, auth } from '@/server/auth'
 import { isStaff } from '@/server/auth.config'
 
 /**
- * P0-L-004 — minimal staff sign-in. Visual treatment is a Support ticket;
- * this exists so the /admin guard is testable end to end.
+ * P0-L-004 — staff sign in.
+ *
+ * A failed sign-in has to land back here with a message. Auth.js throws
+ * AuthError from the server action, and letting that escape renders the Next
+ * error page — which reads as "the site is broken" for what is simply a typo,
+ * and leaks a stack trace in development.
+ *
+ * The message is deliberately the same for an unknown email, a wrong password
+ * and a deactivated account, so this page cannot be used to enumerate staff.
  */
 export default async function LoginPage({
   searchParams,
@@ -17,55 +26,60 @@ export default async function LoginPage({
 
   async function authenticate(formData: FormData) {
     'use server'
-    await signIn('credentials', {
-      email: formData.get('email'),
-      password: formData.get('password'),
-      redirectTo: (formData.get('callbackUrl') as string) || '/admin/leads',
-    })
+    const target = (formData.get('callbackUrl') as string) || '/admin/leads'
+    try {
+      await signIn('credentials', {
+        email: formData.get('email'),
+        password: formData.get('password'),
+        redirectTo: target,
+      })
+    } catch (err) {
+      if (err instanceof AuthError) {
+        redirect(`/login?error=1${target ? `&callbackUrl=${encodeURIComponent(target)}` : ''}`)
+      }
+      // NEXT_REDIRECT and anything else genuinely unexpected must propagate.
+      throw err
+    }
   }
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-sm flex-col justify-center gap-6 px-6">
-      <h1 className="text-2xl">Staff sign in</h1>
+    <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center px-6 py-12">
+      <Card>
+        <h1 className="font-heading text-2xl text-ink">Staff sign in</h1>
+        <p className="mt-1 text-ink-muted">Execuneed practice admin.</p>
 
-      {error ? (
-        <p role="alert" className="rounded-md bg-danger/10 p-3 text-sm text-danger">
-          Those details did not match an active staff account.
-        </p>
-      ) : null}
+        {error ? (
+          <div className="mt-4">
+            <Alert tone="danger">
+              Those details did not match an active staff account.
+            </Alert>
+          </div>
+        ) : null}
 
-      <form action={authenticate} className="flex flex-col gap-4">
-        <input type="hidden" name="callbackUrl" value={callbackUrl ?? ''} />
+        <form action={authenticate} className="mt-6 flex flex-col gap-4">
+          <input type="hidden" name="callbackUrl" value={callbackUrl ?? ''} />
 
-        <label className="flex flex-col gap-1 text-sm">
-          Email
-          <input
-            name="email"
-            type="email"
-            required
-            autoComplete="username"
-            className="rounded-md border border-line bg-white px-3 py-2 text-base"
-          />
-        </label>
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="email">Email</label>
+            <Input id="email" name="email" type="email" required autoComplete="username" />
+          </div>
 
-        <label className="flex flex-col gap-1 text-sm">
-          Password
-          <input
-            name="password"
-            type="password"
-            required
-            autoComplete="current-password"
-            className="rounded-md border border-line bg-white px-3 py-2 text-base"
-          />
-        </label>
+          <div className="flex flex-col gap-1.5">
+            <label htmlFor="password">Password</label>
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              required
+              autoComplete="current-password"
+            />
+          </div>
 
-        <button
-          type="submit"
-          className="rounded-md bg-sea px-4 py-3 text-base text-paper"
-        >
-          Sign in
-        </button>
-      </form>
+          <Button type="submit" size="lg">
+            Sign in
+          </Button>
+        </form>
+      </Card>
     </main>
   )
 }

@@ -1,8 +1,16 @@
-export default function CookiesPage() {
+import type { Metadata } from 'next'
+import { LegalShell, legalMetadata } from '@/ui/legal/LegalShell'
+
+export const metadata: Metadata = {
+  title: 'Cookie policy',
+  ...legalMetadata,
+}
+
+export default function Page() {
   return (
-    <main>
-      <h1>Cookie policy</h1>
-      <p>NEEDS_LEGAL.</p>
-    </main>
+    <LegalShell
+      title={'Cookie policy'}
+      summary={'What this website stores in your browser and why.'}
+    />
   )
 }

@@ -48,3 +48,50 @@ jobs:
       - run: pnpm build
         env:
           AUTH_SECRET: ci-placeholder-secret-not-used-at-runtime
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: verify
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: execuneed_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      AUTH_SECRET: ci-placeholder-secret-not-used-in-production
+      AUTH_TRUST_HOST: 'true'
+      SEED_DENISE_PASSWORD: ci-denise-password
+      SEED_CLIENT_PASSWORD: ci-client-password
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm db:generate
+      - run: pnpm --filter @execuneed/db exec prisma migrate deploy
+      - run: pnpm db:seed
+      - run: pnpm --filter @execuneed/web exec playwright install --with-deps chromium
+      # The consent paths and the P1 live-done checklist run against a real
+      # browser and a real database. They are the tests we cannot afford to
+      # have drift.
+      - run: pnpm --filter @execuneed/web exec playwright test
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-traces
+          path: apps/web/test-results/
+          retention-days: 7

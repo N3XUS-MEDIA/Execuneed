@@ -1,8 +1,16 @@
-export default function ConflictOfInterestPage() {
+import type { Metadata } from 'next'
+import { LegalShell, legalMetadata } from '@/ui/legal/LegalShell'
+
+export const metadata: Metadata = {
+  title: 'Conflict of interest policy',
+  ...legalMetadata,
+}
+
+export default function Page() {
   return (
-    <main>
-      <h1>Conflict of interest</h1>
-      <p>NEEDS_LEGAL. Host the approved policy, do not draft one from scratch.</p>
-    </main>
+    <LegalShell
+      title={'Conflict of interest policy'}
+      summary={'How the practice identifies, avoids and discloses conflicts of interest.'}
+    />
   )
 }

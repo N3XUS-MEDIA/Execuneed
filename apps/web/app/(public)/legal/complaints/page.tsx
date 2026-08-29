@@ -1,8 +1,16 @@
-export default function ComplaintsPage() {
+import type { Metadata } from 'next'
+import { LegalShell, legalMetadata } from '@/ui/legal/LegalShell'
+
+export const metadata: Metadata = {
+  title: 'Complaints process',
+  ...legalMetadata,
+}
+
+export default function Page() {
   return (
-    <main>
-      <h1>Complaints</h1>
-      <p>NEEDS_LEGAL. Host the practice complaints process and Discovery compliance contact once confirmed.</p>
-    </main>
+    <LegalShell
+      title={'Complaints process'}
+      summary={'How to raise a complaint with the practice and how it will be handled.'}
+    />
   )
 }

@@ -216,7 +216,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
 ## P1 — Support lane
 
 ### P1-S-019
-- owner: support | complexity: C1 | status: ready
+- owner: support | complexity: C1 | status: done
 - title: Home page sections
 - dependsOn: [P0-S-002, P0-S-004]
 - files: apps/web/app/(public)/page.tsx, apps/web/src/content/home.ts
@@ -225,13 +225,13 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - primary CTA is cover review
 
 ### P1-S-020
-- owner: support | complexity: C1 | status: ready
+- owner: support | complexity: C1 | status: done
 - title: How we work page
 - dependsOn: [P0-S-002, P0-S-004]
 - files: apps/web/app/(public)/how-we-work/page.tsx
 
 ### P1-S-021
-- owner: support | complexity: C1 | status: ready
+- owner: support | complexity: C1 | status: done
 - title: Services overview page
 - dependsOn: [P0-S-002, P0-S-004]
 - files: apps/web/app/(public)/services/page.tsx
@@ -239,19 +239,19 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - no unapproved Discovery premiums
 
 ### P1-S-022
-- owner: support | complexity: C1 | status: ready
+- owner: support | complexity: C1 | status: done
 - title: Cover review landing page
 - dependsOn: [P0-S-002, P0-S-004]
 - files: apps/web/app/(public)/cover-review/page.tsx
 
 ### P1-S-023
-- owner: support | complexity: C1 | status: ready
+- owner: support | complexity: C1 | status: done
 - title: Contact page
 - dependsOn: [P0-S-002, P0-S-004]
 - files: apps/web/app/(public)/contact/page.tsx
 
 ### P1-S-024
-- owner: support | complexity: C1 | status: ready
+- owner: support | complexity: C1 | status: done
 - title: Legal page shells
 - dependsOn: [P0-S-002, P0-S-004]
 - files: apps/web/app/(public)/legal/**
@@ -260,7 +260,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - NEEDS_LEGAL visible only in preview banner for staff, not as fake final law
 
 ### P1-S-025
-- owner: support | complexity: C1 | status: ready
+- owner: support | complexity: C1 | status: done
 - title: Public lead form UI wired to createLeadAction
 - dependsOn: [P1-L-007, P1-L-008]
 - files: apps/web/src/ui/leads/LeadForm.tsx
@@ -269,31 +269,31 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - cannot submit without enquiry consent
 
 ### P1-S-026
-- owner: support | complexity: C0 | status: ready
+- owner: support | complexity: C0 | status: done
 - title: Success / what happens next screen
 - dependsOn: [P1-S-025]
 - files: apps/web/app/(public)/cover-review/thanks/page.tsx
 
 ### P1-S-027
-- owner: support | complexity: C1 | status: ready
+- owner: support | complexity: C1 | status: done
 - title: Admin leads table filters score badge
 - dependsOn: [P1-L-014, P1-L-010, P0-S-003]
 - files: apps/web/app/(admin)/leads/page.tsx
 
 ### P1-S-028
-- owner: support | complexity: C1 | status: ready
+- owner: support | complexity: C1 | status: done
 - title: Admin lead detail timeline and tasks
 - dependsOn: [P1-L-012, P1-L-015, P0-S-003]
 - files: apps/web/app/(admin)/leads/[id]/page.tsx
 
 ### P1-S-029
-- owner: support | complexity: C1 | status: ready
+- owner: support | complexity: C1 | status: done
 - title: Admin household stub page
 - dependsOn: [P1-L-009, P0-S-003]
 - files: apps/web/app/(admin)/households/[id]/page.tsx
 
 ### P1-S-030
-- owner: support | complexity: C1 | status: ready
+- owner: support | complexity: C1 | status: done
 - title: Accessible form errors and loading states
 - dependsOn: [P1-S-025]
 - files: apps/web/src/ui/leads/LeadForm.tsx
@@ -301,7 +301,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - errors linked with aria-describedby
 
 ### P1-S-031
-- owner: support | complexity: C1 | status: ready
+- owner: support | complexity: C1 | status: done
 - title: Playwright submit lead with and without marketing consent
 - dependsOn: [P1-L-007, P1-S-025]
 - files: apps/web/tests/lead-form.spec.ts
@@ -310,7 +310,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - marketing false persists
 
 ### P1-S-032
-- owner: support | complexity: C0 | status: ready
+- owner: support | complexity: C0 | status: done
 - title: Responsive pass and lighthouse checklist
 - dependsOn: [P1-S-019, P1-S-020, P1-S-021, P1-S-022, P1-S-023, P1-S-024]
 - files: docs/ui/QA_CHECKLIST.md

@@ -68,15 +68,13 @@ async function main() {
   const created: string[] = []
   for (const s of staff) {
     const { plain, generated } = password(s.env)
+    const passwordHash = await bcrypt.hash(plain, 10)
     await prisma.user.upsert({
       where: { email: s.email },
-      update: { name: s.name, role: s.role, active: true },
-      create: {
-        email: s.email,
-        name: s.name,
-        role: s.role,
-        passwordHash: await bcrypt.hash(plain, 10),
-      },
+      // The hash is rewritten on every run. Without it, re-seeding leaves the
+      // old password in place and SEED_*_PASSWORD silently does nothing.
+      update: { name: s.name, role: s.role, active: true, passwordHash },
+      create: { email: s.email, name: s.name, role: s.role, passwordHash },
     })
     if (generated) created.push(`  ${s.email}  ${plain}`)
   }
@@ -84,14 +82,15 @@ async function main() {
   // A client-role user, so the /admin gate can be tested against a real
   // non-staff session rather than only against anonymous.
   const clientPw = password('SEED_CLIENT_PASSWORD')
+  const clientHash = await bcrypt.hash(clientPw.plain, 10)
   await prisma.user.upsert({
     where: { email: 'client@example.com' },
-    update: { role: 'client', active: true },
+    update: { role: 'client', active: true, passwordHash: clientHash },
     create: {
       email: 'client@example.com',
       name: 'Test Client',
       role: 'client',
-      passwordHash: await bcrypt.hash(clientPw.plain, 10),
+      passwordHash: clientHash,
     },
   })
   if (clientPw.generated) created.push(`  client@example.com  ${clientPw.plain}`)
