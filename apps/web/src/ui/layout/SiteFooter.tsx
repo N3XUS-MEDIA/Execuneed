@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Disclaimer } from '@execuneed/ui'
 import { Wordmark } from './Wordmark'
-import type { OrganisationSettings } from '@execuneed/db'
+import type { OrganisationSettings } from '@prisma/client'
 import { copy } from '@/content/copy'
 
 const legalLinks = [

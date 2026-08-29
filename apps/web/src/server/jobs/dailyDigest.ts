@@ -1,4 +1,4 @@
-import { prisma } from '@execuneed/db'
+import { prisma } from '@/server/db'
 
 /**
  * P1-L-016 — the morning digest for Wayne and Denise.

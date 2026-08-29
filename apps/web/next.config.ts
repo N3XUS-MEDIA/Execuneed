@@ -6,18 +6,21 @@ const dev = process.env.NODE_ENV !== 'production'
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  transpilePackages: ['@execuneed/ui', '@execuneed/db'],
+  transpilePackages: ['@execuneed/ui'],
   // Several lockfiles exist above this directory on some machines; pin the
   // trace root to the monorepo so Next does not guess.
   outputFileTracingRoot: path.join(import.meta.dirname, '../..'),
   poweredByHeader: false,
-  // The query engine is a binary that nothing statically imports, so tracing
-  // can miss it. Next's Prisma handling does pick it up, but this makes it
-  // explicit rather than depending on that continuing to be true — the failure
-  // mode is every database call 500ing in production while local is fine.
-  outputFileTracingIncludes: {
-    '/**': ['../../packages/db/generated/client/**/*'],
-  },
+  /**
+   * Prisma must not be bundled.
+   *
+   * Bundled, its chunk lands under apps/web and it then resolves the query
+   * engine relative to that — searching /var/task/apps/web/generated/client and
+   * missing the binary entirely, so every database call 500s in production
+   * while local is perfectly healthy. Left external, it is required from
+   * node_modules at runtime and resolves relative to its own real location.
+   */
+  serverExternalPackages: ['@prisma/client'],
   async headers() {
     return [
       {

@@ -1,5 +1,5 @@
-import type { Prisma, PrismaClient } from '@execuneed/db'
-import { prisma } from '@execuneed/db'
+import type { Prisma, PrismaClient } from '@prisma/client'
+import { prisma } from '@/server/db'
 
 type Db = PrismaClient | Prisma.TransactionClient
 

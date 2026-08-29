@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { prisma } from '@execuneed/db'
+import { prisma } from '@/server/db'
 import { Card, CardTitle, CardBody, EmptyState, PageHeader } from '@execuneed/ui'
 import { requireStaff } from '@/server/auth'
 

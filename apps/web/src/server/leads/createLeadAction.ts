@@ -1,6 +1,6 @@
 'use server'
 
-import { prisma } from '@execuneed/db'
+import { prisma } from '@/server/db'
 import { clientIp } from '@/server/clientIp'
 import { LEAD_CAPTURE_LIMIT, rateLimit } from '@/server/rateLimit'
 import { scoreLead } from '@/domain/leads/score'

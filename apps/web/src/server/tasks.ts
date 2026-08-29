@@ -1,7 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { prisma } from '@execuneed/db'
+import { prisma } from '@/server/db'
 import { requireStaff } from '@/server/auth'
 
 /** P1-L-015 — tasks against a lead or a household. */
