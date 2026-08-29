@@ -21,24 +21,45 @@ placeholder text. Deploying that to a public domain publishes a financial
 services site with fabricated-looking disclosures. **A preview deploy is fine
 and useful** — it is `noindex`, and Lighthouse needs one.
 
+## Prisma on Vercel — do not undo this
+
+Two settings keep the app able to reach its database, and both look optional
+until they are missing:
+
+1. `apps/web/src/server/db.ts` imports `@prisma/client` **directly**. It must
+   not be reached through `@execuneed/db`. `serverExternalPackages` only
+   externalises packages the app imports itself; through a compiled workspace
+   package Prisma gets inlined into a server chunk.
+2. `serverExternalPackages: ['@prisma/client']` in `next.config.ts`, and
+   `binaryTargets = ["native", "rhel-openssl-3.0.x"]` in the schema.
+
+Bundled, Prisma resolves its query engine relative to the chunk — under
+`apps/web` — and never finds it. Every database call then 500s in production
+while local development is perfectly healthy, which is what makes it expensive
+to diagnose.
+
+To check a build before deploying:
+
+```bash
+pnpm build
+grep -r 'require("@prisma/client")' apps/web/.next/server | head -1   # must match
+python3 -c "import json;d=json.load(open('apps/web/.next/server/app/api/cron/daily-digest/route.js.nft.json'));print([f for f in d['files'] if 'libquery_engine-rhel' in f])"
+```
+
+Both must be non-empty.
+
 ## Current state — 2026-08-29
 
 Deployed and healthy at `https://execuneed-gold.vercel.app`. Public pages
 return 200, production CSP and HSTS are applied, `/admin` redirects anonymous
 visitors to `/login`, and the cron is registered.
 
-**No environment variables are set on the project yet**, so the app is only
-half alive:
+Environment variables are set and the full P1 path is verified in production:
+a lead submitted on the public form reaches the admin inbox with the correct
+consent state, score and SLA, and `/api/cron/daily-digest` returns 200.
 
-- No `DATABASE_URL` — the lead form cannot write, and admin sign-in cannot
-  work. Public pages still render: `getOrganisationSettings` swallows the
-  connection error and the footer disclaimer renders nothing rather than
-  exposing the `NEEDS_LEGAL` placeholder.
-- No `AUTH_SECRET` — sign-in will fail once a database exists.
-- No `CRON_SECRET` — `/api/cron/daily-digest` returns 503, which is the
-  intended refusal rather than defaulting open.
-
-Set these in Vercel before the site is useful to anyone.
+The footer renders no disclaimer, which is correct — `discoveryJuristicText`
+is empty until the practice confirms the wording.
 
 Note the deployment is publicly reachable at that `.vercel.app` address. It is
 `noindex`, so it will not be crawled, but it is not private. Nothing

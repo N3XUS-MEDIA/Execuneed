@@ -70,6 +70,21 @@ filled in. A preview deploy is fine and is what Lighthouse needs.
 5. Staff emails for the digest: Wayne, Denise
 6. Discovery Marketing Support contact, for the `NeedsApproval` references
 
+## P1 is live
+
+Verified end to end on https://execuneed-gold.vercel.app on 2026-08-29:
+
+1. Lead submitted on the public `/cover-review` form
+2. Mobile normalised to E.164 — `0825550143` became `+27825550143`
+3. Score 4, computed server side
+4. `contactForEnquiry` true, `marketing` **false** — not bundled
+5. One timeline interaction and one `lead.created` audit row written
+6. Denise signed in as `admin` and saw the lead in the inbox
+7. Consent shown as "Enquiry only"; SLA due Monday 12:00, correctly rolling
+   a Saturday evening enquiry over the weekend to four business hours
+
+`/api/cron/daily-digest` returns 200 with real query results.
+
 ## Deployed
 
 Live at `https://execuneed-gold.vercel.app`, Vercel project `execuneed` on the
@@ -79,8 +94,7 @@ registered at 05:00 UTC daily.
 Lighthouse against the live deployment: 97–100 performance, 100 accessibility,
 100 best practices, CLS 0.
 
-Environment variables are not set yet, so the database and sign-in paths do not
-work. See `docs/ops/DEPLOYMENT.md`.
+Environment variables are set. Postgres and Redis are on Railway in EU West.
 
 ## Blocked on Jared
 
