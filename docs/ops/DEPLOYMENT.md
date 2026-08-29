@@ -21,6 +21,29 @@ placeholder text. Deploying that to a public domain publishes a financial
 services site with fabricated-looking disclosures. **A preview deploy is fine
 and useful** — it is `noindex`, and Lighthouse needs one.
 
+## Current state — 2026-08-29
+
+Deployed and healthy at `https://execuneed-gold.vercel.app`. Public pages
+return 200, production CSP and HSTS are applied, `/admin` redirects anonymous
+visitors to `/login`, and the cron is registered.
+
+**No environment variables are set on the project yet**, so the app is only
+half alive:
+
+- No `DATABASE_URL` — the lead form cannot write, and admin sign-in cannot
+  work. Public pages still render: `getOrganisationSettings` swallows the
+  connection error and the footer disclaimer renders nothing rather than
+  exposing the `NEEDS_LEGAL` placeholder.
+- No `AUTH_SECRET` — sign-in will fail once a database exists.
+- No `CRON_SECRET` — `/api/cron/daily-digest` returns 503, which is the
+  intended refusal rather than defaulting open.
+
+Set these in Vercel before the site is useful to anyone.
+
+Note the deployment is publicly reachable at that `.vercel.app` address. It is
+`noindex`, so it will not be crawled, but it is not private. Nothing
+confidential is on it — there is no database attached and no client data.
+
 ## Environment
 
 | Variable | Preview | Production |

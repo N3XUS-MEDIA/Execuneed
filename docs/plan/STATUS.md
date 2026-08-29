@@ -70,6 +70,18 @@ filled in. A preview deploy is fine and is what Lighthouse needs.
 5. Staff emails for the digest: Wayne, Denise
 6. Discovery Marketing Support contact, for the `NeedsApproval` references
 
+## Deployed
+
+Live at `https://execuneed-gold.vercel.app`, Vercel project `execuneed` on the
+N3XUS MEDIA team (Hobby). Root Directory `apps/web`, no command overrides, cron
+registered at 05:00 UTC daily.
+
+Lighthouse against the live deployment: 97–100 performance, 100 accessibility,
+100 best practices, CLS 0.
+
+Environment variables are not set yet, so the database and sign-in paths do not
+work. See `docs/ops/DEPLOYMENT.md`.
+
 ## Blocked on Jared
 
 - Supabase `execuneed-dev` database password, then:
