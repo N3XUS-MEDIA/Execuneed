@@ -1,6 +1,6 @@
 import { cache } from 'react'
-import { prisma } from '@execuneed/db'
-import type { OrganisationSettings } from '@execuneed/db'
+import { prisma } from '@/server/db'
+import type { OrganisationSettings } from '@prisma/client'
 
 /**
  * P1-L-006 — the single organisation row.

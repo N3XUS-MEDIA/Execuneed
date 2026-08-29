@@ -2,7 +2,7 @@ import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
-import { prisma } from '@execuneed/db'
+import { prisma } from '@/server/db'
 import { authConfig, isStaff } from './auth.config'
 import type { Role } from '../contracts/types'
 

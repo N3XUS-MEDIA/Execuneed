@@ -14,6 +14,7 @@
   "dependencies": {
     "@execuneed/db": "workspace:*",
     "@execuneed/ui": "workspace:*",
+    "@prisma/client": "^6.1.0",
     "bcryptjs": "^2.4.3",
     "ioredis": "^6.0.0",
     "next": "^15.1.3",

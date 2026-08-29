@@ -1,7 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { prisma } from '@execuneed/db'
+import { prisma } from '@/server/db'
 import type { LeadStatus } from '@/contracts/types'
 import { requireStaff } from '@/server/auth'
 import { recordAudit } from '@/server/audit'

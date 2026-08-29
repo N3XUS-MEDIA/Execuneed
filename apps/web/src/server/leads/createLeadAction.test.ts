@@ -1,5 +1,5 @@
 import { afterAll, beforeEach, describe, expect, it } from 'vitest'
-import { prisma } from '@execuneed/db'
+import { prisma } from '@/server/db'
 import { createLeadAction } from './createLeadAction'
 import { __resetRateLimits } from '@/server/rateLimit'
 
