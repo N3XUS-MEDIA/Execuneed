@@ -32,7 +32,7 @@ export default async function LeadDetailPage({
         title={name}
         lede={lead.person.mobile}
         actions={
-          <Link href="/admin/leads" className="self-center text-sea underline underline-offset-4">
+          <Link href="/admin/leads" className="self-center text-navy underline underline-offset-4">
             Back to leads
           </Link>
         }
@@ -85,7 +85,7 @@ export default async function LeadDetailPage({
                 {lead.household ? (
                   <Link
                     href={`/admin/households/${lead.household.id}`}
-                    className="text-sea underline underline-offset-4"
+                    className="text-navy underline underline-offset-4"
                   >
                     {lead.household.label}
                   </Link>

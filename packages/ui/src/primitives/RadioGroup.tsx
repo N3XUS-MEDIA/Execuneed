@@ -29,10 +29,10 @@ export const RadioGroupItem = React.forwardRef<
     <span
       className={cn(
         'flex size-6 items-center justify-center rounded-full border border-line bg-white',
-        'group-data-[state=checked]:border-sea',
+        'group-data-[state=checked]:border-navy',
       )}
     >
-      <RadioGroupPrimitive.Indicator className="size-3 rounded-full bg-sea" />
+      <RadioGroupPrimitive.Indicator className="size-3 rounded-full bg-navy" />
     </span>
   </RadioGroupPrimitive.Item>
 ))

@@ -13,17 +13,23 @@ export const execuneedPreset = {
   theme: {
     extend: {
       colors: {
+        navy: {
+          DEFAULT: tokens.color.navy,
+          light: tokens.color.navyLight,
+        },
         paper: tokens.color.paper,
         ink: {
           DEFAULT: tokens.color.ink,
           muted: tokens.color.inkMuted,
         },
         sand: tokens.color.sand,
-        sea: tokens.color.sea,
         line: tokens.color.line,
         danger: tokens.color.danger,
         warn: tokens.color.warn,
         ok: tokens.color.ok,
+        // `sea` was the pre-brand accent. Aliased to navy so nothing breaks
+        // mid-migration; remove once no usage remains.
+        sea: tokens.color.navy,
       },
       fontFamily: {
         heading: [tokens.font.heading],

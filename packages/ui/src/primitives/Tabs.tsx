@@ -26,7 +26,7 @@ export const TabsTrigger = React.forwardRef<
     ref={ref}
     className={cn(
       'min-h-[44px] px-4 text-base text-ink-muted',
-      'data-[state=active]:border-b-2 data-[state=active]:border-sea data-[state=active]:text-ink',
+      'data-[state=active]:border-b-2 data-[state=active]:border-navy data-[state=active]:text-ink',
       className,
     )}
     {...props}

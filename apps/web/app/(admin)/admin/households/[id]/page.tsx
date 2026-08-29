@@ -27,7 +27,7 @@ export default async function HouseholdPage({
       <PageHeader
         title={household.label}
         actions={
-          <Link href="/admin/leads" className="self-center text-sea underline underline-offset-4">
+          <Link href="/admin/leads" className="self-center text-navy underline underline-offset-4">
             Back to leads
           </Link>
         }
@@ -66,7 +66,7 @@ export default async function HouseholdPage({
                   <li key={l.id}>
                     <Link
                       href={`/admin/leads/${l.id}`}
-                      className="text-sea underline underline-offset-4"
+                      className="text-navy underline underline-offset-4"
                     >
                       {l.intent.replace(/_/g, ' ')}
                     </Link>

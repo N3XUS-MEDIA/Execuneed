@@ -31,7 +31,7 @@ export function LegalShell({
 
       <p className="text-ink-muted">
         For this information now, please{' '}
-        <Link href="/contact" className="text-sea underline underline-offset-4">
+        <Link href="/contact" className="text-navy underline underline-offset-4">
           contact the practice
         </Link>{' '}
         and we will send you the current document.

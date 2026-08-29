@@ -14,11 +14,13 @@
   h1,
   h2,
   h3 {
-    @apply font-heading;
+    /* The wordmark is tightly set; headings echo that rather than sitting at
+       default tracking, which looks loose beside the logo. */
+    @apply font-heading tracking-tight;
   }
 
   /* docs/ui/PRIMITIVES.md — 50+ audience, large tap targets, visible focus. */
   :focus-visible {
-    @apply outline-2 outline-offset-2 outline-sea;
+    @apply outline-2 outline-offset-2 outline-navy;
   }
 }
