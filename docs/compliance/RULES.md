@@ -27,7 +27,8 @@ This is not legal advice. It is build policy. Confirm final wording with Execune
 - Do not put Discovery in domains or new email local-parts we create beyond what already exists.
 - Generic Discovery logo same visual weight as Execuneed logo when used.
 - Homepage disclaimer comes from `OrganisationSettings.discoveryJuristicText`.
-- Product benefit copy requires `NEEDS_APPROVAL` until a Marketing Support ticket id is stored.
+- Product benefit copy requires `NEEDS_APPROVAL` until a Marketing Support ticket id is stored. The register is `docs/compliance/DISCOVERY_APPROVALS.md`; the gate is the `approvalRef` field in `apps/web/src/content/products.ts`.
+- Do not copy text from discovery.co.za. It is their copyright, and adviser sites reusing it is what the marketing rules exist to prevent. Describe the client's need in our own words; put anything product-specific behind the approval gate.
 
 ## FICA
 

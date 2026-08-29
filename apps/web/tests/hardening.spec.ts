@@ -119,3 +119,27 @@ test.describe('keyboard access', () => {
     await expect(focused).toBeVisible()
   })
 })
+
+test.describe('Discovery product copy', () => {
+  test('a category page publishes no unapproved product claim', async ({ page }) => {
+    await page.goto('/services/banking-and-vitality')
+    await expect(page.getByRole('heading', { name: 'Banking and Vitality' })).toBeVisible()
+
+    // With no approvalRef, NeedsApproval renders the fallback and no claims.
+    await expect(page.getByText(/being confirmed with Discovery/)).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Product detail' })).toHaveCount(0)
+  })
+
+  test('every service page carries the not-advice note', async ({ page }) => {
+    for (const slug of ['life-and-income', 'retirement-and-investments', 'car-and-home']) {
+      await page.goto(`/services/${slug}`)
+      await expect(page.getByText(/Nothing on these pages is advice/)).toBeVisible()
+    }
+  })
+
+  test('the services hub links every category', async ({ page }) => {
+    await page.goto('/services')
+    const links = page.getByRole('link', { name: 'What a review covers' })
+    await expect(links).toHaveCount(6)
+  })
+})

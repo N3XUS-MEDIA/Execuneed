@@ -11,6 +11,8 @@ const PAGES = [
   '/',
   '/how-we-work',
   '/services',
+  '/services/life-and-income',
+  '/services/banking-and-vitality',
   '/cover-review',
   '/contact',
   '/legal/privacy',
