@@ -97,7 +97,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
 ## P1 — Lead lane
 
 ### P1-L-006
-- owner: lead | complexity: C3 | status: backlog
+- owner: lead | complexity: C3 | status: done
 - title: OrganisationSettings model + disclaimer renderer
 - dependsOn: [P0-L-003]
 - files: packages/db, apps/web/src/server/org.ts, apps/web/src/ui/layout/Disclaimer.tsx
@@ -106,7 +106,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - footer renders discoveryJuristicText
 
 ### P1-L-007
-- owner: lead | complexity: C4 | status: backlog
+- owner: lead | complexity: C4 | status: done
 - title: createLeadAction + validation + audit
 - dependsOn: [P0-L-003, P1-L-008, P1-L-013]
 - files: apps/web/src/server/leads/createLeadAction.ts
@@ -116,7 +116,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - returns leadId and score
 
 ### P1-L-008
-- owner: lead | complexity: C4 | status: backlog
+- owner: lead | complexity: C4 | status: done
 - title: Consent model enquiry vs marketing vs channels
 - dependsOn: [P0-L-003]
 - files: packages/db, apps/web/src/domain/consent.ts
@@ -126,7 +126,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - stored on person + lead
 
 ### P1-L-009
-- owner: lead | complexity: C3 | status: backlog
+- owner: lead | complexity: C3 | status: done
 - title: Household + Person create from lead
 - dependsOn: [P1-L-007]
 - files: apps/web/src/domain/households.ts
@@ -135,7 +135,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - household stub labelled from lastName or firstName
 
 ### P1-L-010
-- owner: lead | complexity: C3 | status: backlog
+- owner: lead | complexity: C3 | status: done
 - title: Admin session and role gates on actions
 - dependsOn: [P0-L-004]
 - files: apps/web/src/server/auth.ts
@@ -143,7 +143,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - listLeadsAction unauthorized without staff role
 
 ### P1-L-011
-- owner: lead | complexity: C3 | status: backlog
+- owner: lead | complexity: C3 | status: done
 - title: Signed URL upload policy stub
 - dependsOn: [P0-L-002]
 - files: apps/web/src/server/files/policy.ts
@@ -152,7 +152,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - P1 does not expose an upload UI
 
 ### P1-L-012
-- owner: lead | complexity: C3 | status: backlog
+- owner: lead | complexity: C3 | status: done
 - title: Interaction timeline write API
 - dependsOn: [P1-L-007]
 - files: apps/web/src/server/interactions.ts
@@ -161,7 +161,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - getLeadAction returns chronological list
 
 ### P1-L-013
-- owner: lead | complexity: C3 | status: backlog
+- owner: lead | complexity: C3 | status: done
 - title: SLA timestamps on lead create
 - dependsOn: [P1-L-014]
 - files: apps/web/src/domain/leads/sla.ts
@@ -170,7 +170,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - unit tests for weekend overflow
 
 ### P1-L-014
-- owner: lead | complexity: C3 | status: backlog
+- owner: lead | complexity: C3 | status: done
 - title: Deterministic lead scoring
 - dependsOn: [P0-L-002]
 - files: apps/web/src/domain/leads/score.ts
@@ -178,7 +178,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - pure function unit tests for weights in CONTRACTS.md
 
 ### P1-L-015
-- owner: lead | complexity: C2 | status: backlog
+- owner: lead | complexity: C2 | status: done
 - title: Task create / complete API
 - dependsOn: [P0-L-003, P1-L-010]
 - files: apps/web/src/server/tasks.ts
@@ -186,7 +186,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - completeTaskAction is idempotent
 
 ### P1-L-016
-- owner: lead | complexity: C3 | status: backlog
+- owner: lead | complexity: C3 | status: done
 - title: Daily digest job skeleton
 - dependsOn: [P1-L-007]
 - files: apps/web/src/server/jobs/dailyDigest.ts
@@ -195,7 +195,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - no AI
 
 ### P1-L-017
-- owner: lead | complexity: C2 | status: backlog
+- owner: lead | complexity: C2 | status: done
 - title: Error reporting hook
 - dependsOn: [P0-L-002]
 - files: apps/web/src/server/log.ts
@@ -203,7 +203,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - server actions log ActionError codes
 
 ### P1-L-018
-- owner: lead | complexity: C2 | status: backlog
+- owner: lead | complexity: C2 | status: done
 - title: Seed org, users, sample leads
 - dependsOn: [P1-L-007, P1-L-006]
 - files: packages/db/src/seed.ts
@@ -216,7 +216,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
 ## P1 — Support lane
 
 ### P1-S-019
-- owner: support | complexity: C1 | status: backlog
+- owner: support | complexity: C1 | status: ready
 - title: Home page sections
 - dependsOn: [P0-S-002, P0-S-004]
 - files: apps/web/app/(public)/page.tsx, apps/web/src/content/home.ts
@@ -225,13 +225,13 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - primary CTA is cover review
 
 ### P1-S-020
-- owner: support | complexity: C1 | status: backlog
+- owner: support | complexity: C1 | status: ready
 - title: How we work page
 - dependsOn: [P0-S-002, P0-S-004]
 - files: apps/web/app/(public)/how-we-work/page.tsx
 
 ### P1-S-021
-- owner: support | complexity: C1 | status: backlog
+- owner: support | complexity: C1 | status: ready
 - title: Services overview page
 - dependsOn: [P0-S-002, P0-S-004]
 - files: apps/web/app/(public)/services/page.tsx
@@ -239,19 +239,19 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - no unapproved Discovery premiums
 
 ### P1-S-022
-- owner: support | complexity: C1 | status: backlog
+- owner: support | complexity: C1 | status: ready
 - title: Cover review landing page
 - dependsOn: [P0-S-002, P0-S-004]
 - files: apps/web/app/(public)/cover-review/page.tsx
 
 ### P1-S-023
-- owner: support | complexity: C1 | status: backlog
+- owner: support | complexity: C1 | status: ready
 - title: Contact page
 - dependsOn: [P0-S-002, P0-S-004]
 - files: apps/web/app/(public)/contact/page.tsx
 
 ### P1-S-024
-- owner: support | complexity: C1 | status: backlog
+- owner: support | complexity: C1 | status: ready
 - title: Legal page shells
 - dependsOn: [P0-S-002, P0-S-004]
 - files: apps/web/app/(public)/legal/**
@@ -260,7 +260,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - NEEDS_LEGAL visible only in preview banner for staff, not as fake final law
 
 ### P1-S-025
-- owner: support | complexity: C1 | status: backlog
+- owner: support | complexity: C1 | status: ready
 - title: Public lead form UI wired to createLeadAction
 - dependsOn: [P1-L-007, P1-L-008]
 - files: apps/web/src/ui/leads/LeadForm.tsx
@@ -269,31 +269,31 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - cannot submit without enquiry consent
 
 ### P1-S-026
-- owner: support | complexity: C0 | status: backlog
+- owner: support | complexity: C0 | status: ready
 - title: Success / what happens next screen
 - dependsOn: [P1-S-025]
 - files: apps/web/app/(public)/cover-review/thanks/page.tsx
 
 ### P1-S-027
-- owner: support | complexity: C1 | status: backlog
+- owner: support | complexity: C1 | status: ready
 - title: Admin leads table filters score badge
 - dependsOn: [P1-L-014, P1-L-010, P0-S-003]
 - files: apps/web/app/(admin)/leads/page.tsx
 
 ### P1-S-028
-- owner: support | complexity: C1 | status: backlog
+- owner: support | complexity: C1 | status: ready
 - title: Admin lead detail timeline and tasks
 - dependsOn: [P1-L-012, P1-L-015, P0-S-003]
 - files: apps/web/app/(admin)/leads/[id]/page.tsx
 
 ### P1-S-029
-- owner: support | complexity: C1 | status: backlog
+- owner: support | complexity: C1 | status: ready
 - title: Admin household stub page
 - dependsOn: [P1-L-009, P0-S-003]
 - files: apps/web/app/(admin)/households/[id]/page.tsx
 
 ### P1-S-030
-- owner: support | complexity: C1 | status: backlog
+- owner: support | complexity: C1 | status: ready
 - title: Accessible form errors and loading states
 - dependsOn: [P1-S-025]
 - files: apps/web/src/ui/leads/LeadForm.tsx
@@ -301,7 +301,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - errors linked with aria-describedby
 
 ### P1-S-031
-- owner: support | complexity: C1 | status: backlog
+- owner: support | complexity: C1 | status: ready
 - title: Playwright submit lead with and without marketing consent
 - dependsOn: [P1-L-007, P1-S-025]
 - files: apps/web/tests/lead-form.spec.ts
@@ -310,7 +310,7 @@ Status: `backlog | ready | in_progress | blocked | review | done`
   - marketing false persists
 
 ### P1-S-032
-- owner: support | complexity: C0 | status: backlog
+- owner: support | complexity: C0 | status: ready
 - title: Responsive pass and lighthouse checklist
 - dependsOn: [P1-S-019, P1-S-020, P1-S-021, P1-S-022, P1-S-023, P1-S-024]
 - files: docs/ui/QA_CHECKLIST.md

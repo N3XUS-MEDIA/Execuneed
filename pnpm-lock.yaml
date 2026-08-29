@@ -62,7 +62,7 @@ importers:
         version: 10.5.4(postcss@8.5.26)
       eslint:
         specifier: ^9.17.0
-        version: 9.39.5(jiti@1.21.7)
+        version: 9.39.5(jiti@2.7.0)
       postcss:
         specifier: ^8.4.49
         version: 8.5.26
@@ -97,9 +97,15 @@ importers:
       '@execuneed/config':
         specifier: workspace:*
         version: link:../config
+      '@types/bcryptjs':
+        specifier: ^2.4.6
+        version: 2.4.6
       '@types/node':
         specifier: ^22.10.2
         version: 22.20.1
+      bcryptjs:
+        specifier: ^2.4.3
+        version: 2.4.3
       eslint:
         specifier: ^9.17.0
         version: 9.39.5(jiti@2.7.0)
@@ -154,7 +160,7 @@ importers:
         version: 19.2.5(@types/react@19.2.18)
       eslint:
         specifier: ^9.17.0
-        version: 9.39.5(jiti@2.7.0)
+        version: 9.39.5(jiti@1.21.7)
       react:
         specifier: ^19.0.0
         version: 19.2.8
