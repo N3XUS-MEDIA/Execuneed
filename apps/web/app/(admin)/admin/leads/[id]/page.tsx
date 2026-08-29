@@ -2,7 +2,9 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Badge, Card, CardTitle, CardBody, EmptyState, PageHeader } from '@execuneed/ui'
 import { getLeadAction } from '@/server/leads/queries'
+import { listAssignableStaffAction } from '@/server/leads/mutations'
 import { ConsentBadge, ScoreBadge, SlaBadge } from '@/ui/admin/LeadBadges'
+import { LeadWorkflow } from '@/ui/admin/LeadWorkflow'
 
 const sast = (d: Date) =>
   d.toLocaleString('en-ZA', {
@@ -18,7 +20,7 @@ export default async function LeadDetailPage({
   params: Promise<{ id: string }>
 }) {
   const { id } = await params
-  const lead = await getLeadAction(id)
+  const [lead, staff] = await Promise.all([getLeadAction(id), listAssignableStaffAction()])
   if (!lead) notFound()
 
   const name = [lead.person.firstName, lead.person.lastName].filter(Boolean).join(' ')
@@ -41,7 +43,15 @@ export default async function LeadDetailPage({
         <ConsentBadge marketing={consent?.marketing ?? false} />
         <SlaBadge dueAt={lead.slaDueAt} status={lead.status} />
         <Badge>{lead.status.replace(/_/g, ' ')}</Badge>
+        {lead.assignedTo ? <Badge tone="sea">{lead.assignedTo.name}</Badge> : null}
       </div>
+
+      <LeadWorkflow
+        leadId={lead.id}
+        status={lead.status}
+        assigneeId={lead.assignedToId}
+        staff={staff}
+      />
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>

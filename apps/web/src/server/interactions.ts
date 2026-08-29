@@ -1,5 +1,6 @@
 'use server'
 
+import { revalidatePath } from 'next/cache'
 import { prisma } from '@execuneed/db'
 import type { InteractionDirection } from '@/contracts/types'
 import { requireStaff } from '@/server/auth'
@@ -46,6 +47,11 @@ export async function addInteractionAction(input: {
       meta: { channel: input.channel, direction: input.direction, leadId: input.leadId ?? null },
     },
   })
+
+  // Without this the note is written but the timeline the person is looking
+  // at does not change, which reads as "it did not save".
+  if (input.leadId) revalidatePath(`/admin/leads/${input.leadId}`)
+  if (input.householdId) revalidatePath(`/admin/households/${input.householdId}`)
 
   return { ok: true as const, data: interaction }
 }

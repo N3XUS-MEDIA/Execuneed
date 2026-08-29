@@ -67,5 +67,14 @@ export function __resetRateLimits() {
 /**
  * A household genuinely might send two enquiries — one for medical aid, one
  * for a bond. Five in ten minutes from one address is not that.
+ *
+ * The ceiling is overridable because an end-to-end suite submits dozens of
+ * enquiries from a single address in under a minute and would otherwise be
+ * throttled by this. The override exists for that and for load testing; it is
+ * never set in production, where the default stands. The limiter's own
+ * behaviour is covered by unit tests, so raising it for e2e loses no coverage.
  */
-export const LEAD_CAPTURE_LIMIT = { limit: 5, windowMs: 10 * 60 * 1000 }
+export const LEAD_CAPTURE_LIMIT = {
+  limit: Number(process.env.LEAD_RATE_LIMIT_MAX ?? 5),
+  windowMs: 10 * 60 * 1000,
+}

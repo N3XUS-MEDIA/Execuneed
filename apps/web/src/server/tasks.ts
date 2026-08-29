@@ -29,6 +29,9 @@ export async function createTaskAction(input: {
     },
   })
 
+  revalidatePath('/admin/tasks')
+  if (input.leadId) revalidatePath(`/admin/leads/${input.leadId}`)
+
   return { ok: true as const, data: task }
 }
 

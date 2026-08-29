@@ -15,9 +15,20 @@ export default defineConfig({
   fullyParallel: false,
   workers: 1,
   reporter: process.env.CI ? 'list' : 'line',
+  // The suite runs against `next dev`, which compiles each route lazily on
+  // first hit. A cold server action can easily exceed the 5s default and the
+  // failure looks like a hang rather than a slow compile.
+  expect: { timeout: 15_000 },
+  // Some tests walk a whole workflow — submit, sign in, then several server
+  // actions — against a lazily compiling dev server.
+  timeout: 90_000,
   use: { baseURL, trace: 'retain-on-failure' },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
+    // The suite submits far more enquiries from one address than a person
+    // ever would, so the public rate limit is raised here. Its real behaviour
+    // is covered in src/server/rateLimit.test.ts.
+    env: { LEAD_RATE_LIMIT_MAX: '1000' },
     command: `pnpm exec next dev -p ${PORT}`,
     url: baseURL,
     reuseExistingServer: !process.env.CI,
