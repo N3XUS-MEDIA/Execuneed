@@ -31,6 +31,8 @@ and useful** — it is `noindex`, and Lighthouse needs one.
 | `NEXT_PUBLIC_APP_URL` | preview URL | `https://execuneed.co.za` |
 | `ALLOW_INDEXING` | **unset** | `true` only after the gate above |
 | `NEXT_PUBLIC_WHATSAPP_E164` | unset | leave unset — the number comes from `OrganisationSettings` |
+| `CRON_SECRET` | generated | generated, `openssl rand -hex 32` |
+| `DIGEST_RECIPIENTS` | unset | Wayne and Denise, once confirmed |
 
 Never set `AUTH_URL`. Auth.js v5 infers the host, and a hardcoded value
 rewrites `req.url` inside middleware, which sends every guard redirect to the
@@ -86,13 +88,29 @@ Then in a browser:
 - **Rate limiting is per instance.** In-memory fixed window. On more than one
   instance a caller gets N times the budget. Swap `rateLimit()` for Redis
   before scaling out — it is one function.
-- **No email transport.** The daily digest collects and renders but refuses to
-  send; wiring it is P2 alongside the queue.
+- **No email transport.** The daily digest collects, renders and is reachable
+  on a schedule at `/api/cron/daily-digest`, but refuses to send. Wiring the
+  transport is P2 alongside the queue. Until then the route returns the
+  rendered text so it can be read and verified.
+- **`CRON_SECRET` must be set** or that route returns 503. It refuses rather
+  than defaulting open, because it returns yesterday's leads.
 - **No error reporting service.** `logActionError` writes structured JSON to
   stdout with field names but never values. Point a log drain at it.
 - **RLS is on with no policies.** Correct for a Prisma-only app. If anything
   ever talks to Supabase PostgREST directly, it will get nothing until
   policies are written deliberately.
+
+## Scheduling
+
+`vercel.json` declares the digest cron at 05:00 UTC on weekdays — 07:00 SAST,
+before the office opens. Vercel sends the `Authorization: Bearer $CRON_SECRET`
+header automatically from the project's environment.
+
+On any other platform, call it the same way:
+
+```bash
+curl -H "Authorization: Bearer $CRON_SECRET" https://<host>/api/cron/daily-digest
+```
 
 ## Rollback
 

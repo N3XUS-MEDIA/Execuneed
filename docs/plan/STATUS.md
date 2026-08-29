@@ -28,6 +28,16 @@ Public site: footer disclaimer renders from `OrganisationSettings`; sticky
 WhatsApp hides itself while no number is confirmed; legal pages are `noindex`
 unconditionally; every other route is `noindex` while `ALLOW_INDEXING=false`.
 
+## Operability — done
+
+- `/api/cron/daily-digest` gives the digest a way to actually run. It was
+  built in P1-L-016 with nothing able to trigger it, so it could never have
+  reached Wayne or Denise. Secret-authenticated, constant-time compare,
+  refuses outright when unconfigured. Still does not send — transport is P2.
+- `vercel.json` with the build command and the weekday 07:00 SAST cron.
+- Lighthouse against a real production build: 99–100 performance, 100
+  accessibility, 100 best practices, CLS 0 on every public page.
+
 ## Production readiness — done
 
 P1-L-059 to P1-L-065, added after the feature work:

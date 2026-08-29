@@ -72,6 +72,7 @@ jobs:
       AUTH_TRUST_HOST: 'true'
       SEED_DENISE_PASSWORD: ci-denise-password
       SEED_CLIENT_PASSWORD: ci-client-password
+      CRON_SECRET: ci-cron-secret
 
     steps:
       - uses: actions/checkout@v4
