@@ -4,17 +4,7 @@ import { copy } from '@/content/copy'
 import { listLeadsAction } from '@/server/leads/queries'
 import type { LeadStatus } from '@/contracts/types'
 import { ConsentBadge, ScoreBadge, SlaBadge } from '@/ui/admin/LeadBadges'
-
-const STATUSES: LeadStatus[] = [
-  'new',
-  'qualified',
-  'booked',
-  'advice_in_progress',
-  'submitted',
-  'won',
-  'lost',
-  'nurture',
-]
+import { LEAD_STATUSES, isLeadStatus, leadStatusLabel } from '@/domain/leads/status'
 
 /**
  * P1-S-027 — the leads inbox.
@@ -28,9 +18,7 @@ export default async function AdminLeadsPage({
   searchParams: Promise<{ q?: string; status?: string }>
 }) {
   const { q, status } = await searchParams
-  const validStatus = STATUSES.includes(status as LeadStatus)
-    ? (status as LeadStatus)
-    : undefined
+  const validStatus: LeadStatus | undefined = isLeadStatus(status) ? status : undefined
 
   const leads = await listLeadsAction({ q, status: validStatus })
 
@@ -51,9 +39,9 @@ export default async function AdminLeadsPage({
           </label>
           <Select id="status" name="status" defaultValue={validStatus ?? ''}>
             <option value="">All</option>
-            {STATUSES.map((s) => (
+            {LEAD_STATUSES.map((s) => (
               <option key={s} value={s}>
-                {s.replace(/_/g, ' ')}
+                {leadStatusLabel(s)}
               </option>
             ))}
           </Select>
@@ -102,7 +90,7 @@ export default async function AdminLeadsPage({
                       </Link>
                       <p className="text-sm text-ink-muted">{lead.person.mobile}</p>
                     </td>
-                    <td className="p-3">{lead.intent.replace(/_/g, ' ')}</td>
+                    <td className="p-3">{leadStatusLabel(lead.intent)}</td>
                     <td className="p-3 text-ink-muted">{lead.person.suburb ?? '—'}</td>
                     <td className="p-3">
                       <ConsentBadge marketing={consent?.marketing ?? false} />
@@ -110,7 +98,7 @@ export default async function AdminLeadsPage({
                     <td className="p-3">
                       <SlaBadge dueAt={lead.slaDueAt} status={lead.status} />
                     </td>
-                    <td className="p-3 text-ink-muted">{lead.status.replace(/_/g, ' ')}</td>
+                    <td className="p-3 text-ink-muted">{leadStatusLabel(lead.status)}</td>
                   </tr>
                 )
               })}

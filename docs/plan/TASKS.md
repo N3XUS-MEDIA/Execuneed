@@ -389,6 +389,26 @@ P4-S-058; nothing is renumbered.
   - go-live gate lists the unanswered client questions
   - known production limits are written down, not implied
 
+### P1-L-066
+- owner: lead | complexity: C3 | status: done
+- title: Lead status and assignment writes
+- dependsOn: [P1-L-007, P1-L-010]
+- files: apps/web/src/server/leads/mutations.ts, apps/web/src/domain/leads/status.ts
+- acceptance:
+  - status changes are audited and land on the timeline
+  - marking lost requires a reason
+  - a lead cannot be assigned to a deactivated or client account
+  - not a state machine — that is P2-L-036
+
+### P1-S-067
+- owner: support | complexity: C1 | status: done
+- title: Lead workflow panel
+- dependsOn: [P1-L-066, P1-L-012, P1-L-015]
+- files: apps/web/src/ui/admin/LeadWorkflow.tsx
+- acceptance:
+  - move, assign, log a conversation, raise a task
+  - each write refreshes what the person is looking at
+
 ---
 
 ## P2 backlog — do not start in P1
