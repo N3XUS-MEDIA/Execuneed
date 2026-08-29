@@ -72,6 +72,11 @@ export const createLeadSchema = z
     channels: z.array(z.enum(CHANNELS)).default([]),
 
     source: z.enum(LEAD_SOURCES).default('web'),
+
+    // Honeypot. Hidden from people, irresistible to naive bots. A filled value
+    // is rejected in the action rather than here, so the bot gets the same
+    // success response a person would and learns nothing.
+    website: z.string().max(200).optional(),
   })
   .refine((v) => !v.marketing || v.channels.length > 0, {
     message: 'Choose at least one way for us to reach you.',

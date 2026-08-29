@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, type Page } from '@playwright/test'
 import { PrismaClient } from '@execuneed/db'
 
 /**
@@ -22,7 +22,7 @@ async function consentFor(mobileE164: string) {
   return { person, consent: person?.consents[0] ?? null }
 }
 
-async function fillBasics(page: import('@playwright/test').Page, mobile: string) {
+async function fillBasics(page: Page, mobile: string) {
   await page.goto('/cover-review')
   await page.getByLabel('First name').fill('Playwright')
   await page.getByLabel('Last name').fill('Tester')

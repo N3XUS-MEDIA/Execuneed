@@ -317,6 +317,80 @@ Status: `backlog | ready | in_progress | blocked | review | done`
 
 ---
 
+## P1 — Production readiness
+
+Added after the P1 feature work landed. These are the gap between "the tests
+pass" and "this is safe to put in front of the public". IDs continue from
+P4-S-058; nothing is renumbered.
+
+### P1-L-059
+- owner: lead | complexity: C3 | status: done
+- title: Rate limit and honeypot on public lead capture
+- dependsOn: [P1-L-007]
+- files: apps/web/src/server/rateLimit.ts, apps/web/src/server/clientIp.ts
+- acceptance:
+  - unauthenticated writes are limited per caller
+  - a filled honeypot writes nothing and still reports success
+  - IP addresses are never persisted
+
+### P1-L-060
+- owner: lead | complexity: C3 | status: done
+- title: Security headers and CSP
+- dependsOn: [P0-L-002]
+- files: apps/web/src/server/securityHeaders.ts, apps/web/next.config.ts
+- acceptance:
+  - no unsafe-eval in production
+  - frame-ancestors none, form-action self
+  - HSTS in production only
+
+### P1-S-061
+- owner: support | complexity: C1 | status: done
+- title: Cookie notice and consent gate
+- dependsOn: [P0-S-002]
+- files: apps/web/src/domain/cookieConsent.ts, apps/web/src/ui/consent/CookieNotice.tsx
+- acceptance:
+  - absence of a decision is not consent
+  - decline is offered as plainly as accept
+  - a gate exists for analytics to pass through later
+
+### P1-S-062
+- owner: support | complexity: C0 | status: done
+- title: Error, not-found and loading states
+- dependsOn: [P0-S-002]
+- files: apps/web/app/error.tsx, apps/web/app/not-found.tsx
+- acceptance:
+  - no stack trace or digest shown to a visitor
+  - the error page offers the phone number
+
+### P1-L-063
+- owner: lead | complexity: C2 | status: done
+- title: robots.txt and sitemap gated on ALLOW_INDEXING
+- dependsOn: [P0-L-002]
+- files: apps/web/app/robots.ts, apps/web/app/sitemap.ts
+- acceptance:
+  - disallow everything until indexing is deliberately enabled
+  - legal pages never listed
+
+### P1-S-064
+- owner: support | complexity: C1 | status: done
+- title: Admin tasks page wired to completeTaskAction
+- dependsOn: [P1-L-015]
+- files: apps/web/app/(admin)/admin/tasks/page.tsx
+- acceptance:
+  - open work first, overdue flagged
+  - completing revalidates the list
+
+### P1-L-065
+- owner: lead | complexity: C2 | status: done
+- title: Deployment runbook and go-live gate
+- dependsOn: []
+- files: docs/ops/DEPLOYMENT.md
+- acceptance:
+  - go-live gate lists the unanswered client questions
+  - known production limits are written down, not implied
+
+---
+
 ## P2 backlog — do not start in P1
 
 ### P2-L-033

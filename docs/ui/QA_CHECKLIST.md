@@ -5,7 +5,7 @@ Owner: Support. Re-run before any release that touches public pages.
 Most of this is automated. `pnpm --filter @execuneed/web exec playwright test`
 runs all of it; the manual items below are the ones a machine cannot judge.
 
-## Automated (36 checks, `apps/web/tests/`)
+## Automated (47 checks, `apps/web/tests/`)
 
 ### Consent — `lead-form.spec.ts`
 
@@ -39,6 +39,22 @@ runs all of it; the manual items below are the ones a machine cannot judge.
 | No horizontal overflow — 8 pages × 375 / 768 / 1280px | pass (24) |
 | Every control on `/cover-review` has a 44px hit area at 375px | pass |
 
+### Production readiness — `hardening.spec.ts`
+
+| Check | Status |
+|---|---|
+| CSP, X-Frame-Options, nosniff, Referrer-Policy, Permissions-Policy present | pass |
+| Server does not announce what it runs (`X-Powered-By` absent) | pass |
+| `robots.txt` disallows everything while indexing is off | pass |
+| Sitemap lists nothing while indexing is off | pass |
+| Legal pages are `noindex` in their own right | pass |
+| Cookie notice appears; declining is recorded and not re-asked | pass |
+| An undecided visitor does not count as consent | pass |
+| Honeypot is off-screen, unfocusable and outside the accessibility tree | pass |
+| A submission filling the honeypot writes nothing | pass |
+| Unknown page returns a real 404, not a stack trace | pass |
+| Skip link is the first keyboard stop | pass |
+
 ## Manual — still to do
 
 These need a person, and several need answers from the practice first.
@@ -56,7 +72,12 @@ These need a person, and several need answers from the practice first.
       renders `NEEDS_LEGAL` placeholder text from the seed.
 - [ ] Sticky WhatsApp button — cannot be tested until a WhatsApp number is
       confirmed. It hides itself while `whatsappE164` is empty, which is the
-      correct behaviour but means the path is unexercised.
+      correct behaviour but means the path is unexercised. **When a number is
+      added, check it against the cookie notice**: both are fixed to the bottom
+      of the viewport and will overlap until the notice is dismissed.
+- [ ] Re-check the CSP once analytics or a chat widget is added. `connect-src`
+      and `script-src` are locked to `'self'`; a third-party script will be
+      blocked until its origin is added deliberately.
 
 ## Blocked on the practice
 

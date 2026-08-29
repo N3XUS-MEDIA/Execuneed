@@ -1,6 +1,7 @@
 import { afterAll, beforeEach, describe, expect, it } from 'vitest'
 import { prisma } from '@execuneed/db'
 import { createLeadAction } from './createLeadAction'
+import { __resetRateLimits } from '@/server/rateLimit'
 
 /**
  * P1-L-007 integration. Runs against the database in DATABASE_URL and skips
@@ -39,7 +40,10 @@ async function wipe() {
 }
 
 d('createLeadAction', () => {
-  beforeEach(wipe)
+  beforeEach(async () => {
+    await wipe()
+    __resetRateLimits()
+  })
   afterAll(async () => {
     await wipe()
     await prisma.$disconnect()
@@ -155,5 +159,39 @@ d('createLeadAction', () => {
     if (!res.ok) return
     // The score is computed server side, never accepted from the client.
     expect(res.data.score).toBe(11)
+  })
+})
+
+d('createLeadAction — abuse protection', () => {
+  beforeEach(async () => {
+    await wipe()
+    __resetRateLimits()
+  })
+
+  it('silently discards a submission that fills the honeypot', async () => {
+    const res = await createLeadAction({ ...valid, website: 'http://spam.example' })
+    // Reports success so a bot learns nothing, but writes nothing.
+    expect(res.ok).toBe(true)
+    expect(await prisma.lead.count()).toBe(0)
+    expect(await prisma.person.count()).toBe(0)
+  })
+
+  it('accepts a submission that leaves the honeypot empty', async () => {
+    const res = await createLeadAction({ ...valid, website: '' })
+    expect(res.ok).toBe(true)
+    expect(await prisma.lead.count()).toBe(1)
+  })
+
+  it('rate limits a caller after five enquiries', async () => {
+    for (let i = 0; i < 5; i++) {
+      const ok = await createLeadAction({ ...valid, mobile: `08211100${10 + i}` })
+      expect(ok.ok).toBe(true)
+    }
+    const blocked = await createLeadAction({ ...valid, mobile: '0821110099' })
+    expect(blocked.ok).toBe(false)
+    if (blocked.ok) return
+    expect(blocked.error.code).toBe('CONFLICT')
+    // The five that got through are still there; only the sixth was refused.
+    expect(await prisma.lead.count()).toBe(5)
   })
 })

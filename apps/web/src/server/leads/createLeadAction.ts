@@ -1,6 +1,8 @@
 'use server'
 
 import { prisma } from '@execuneed/db'
+import { clientIp } from '@/server/clientIp'
+import { LEAD_CAPTURE_LIMIT, rateLimit } from '@/server/rateLimit'
 import { scoreLead } from '@/domain/leads/score'
 import { slaDueAt } from '@/domain/leads/sla'
 import { normaliseConsent } from '@/domain/consent'
@@ -23,9 +25,24 @@ export type CreateLeadOutcome =
  *
  * This action gives no advice, quotes no premium and recommends no product.
  * It records what someone asked for and when a human must respond.
+ *
+ * It is also the only unauthenticated write in the app, so it is rate limited
+ * and honeypotted. Junk in the inbox buries real enquiries, which costs the
+ * practice more than downtime would.
  */
 export async function createLeadAction(input: unknown): Promise<CreateLeadOutcome> {
   try {
+    const ip = await clientIp()
+    const limit = rateLimit(`lead:${ip}`, LEAD_CAPTURE_LIMIT)
+    if (!limit.ok) {
+      throw new ActionFailure(
+        actionError(
+          'CONFLICT',
+          'That is a few enquiries in a short time. Please give it a few minutes, or call us on 021 552 8989.',
+        ),
+      )
+    }
+
     const parsed = createLeadSchema.safeParse(input)
 
     if (!parsed.success) {
@@ -40,6 +57,13 @@ export async function createLeadAction(input: unknown): Promise<CreateLeadOutcom
     }
 
     const v = parsed.data
+
+    // Honeypot tripped. Report success so the bot does not learn to adapt, and
+    // write nothing.
+    if (v.website && v.website.trim().length > 0) {
+      return { ok: true, data: { leadId: 'discarded', personId: 'discarded', score: 0 } }
+    }
+
     const consent = normaliseConsent({
       contactForEnquiry: v.contactForEnquiry,
       marketing: v.marketing,

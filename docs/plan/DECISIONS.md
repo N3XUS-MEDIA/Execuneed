@@ -2,6 +2,28 @@
 
 Append-only. Lead writes. Newest first.
 
+## 2026-08-29 — Rate limiting is in-memory for P1
+
+`createLeadAction` is the only unauthenticated write in the app. It is limited
+to five enquiries per caller per ten minutes, with a honeypot field alongside.
+
+The limiter is an in-memory fixed window, so it is per instance: on more than
+one instance a caller gets N times the budget. That is accepted for P1. The
+alternative is standing up Redis for a site that does not yet have a domain,
+and the swap is a single function. `docs/ops/DEPLOYMENT.md` carries the
+warning so it cannot be forgotten at scale-out.
+
+A tripped honeypot returns success and writes nothing, so a bot cannot learn
+to adapt.
+
+## 2026-08-29 — Cookie preference lives in localStorage, not a cookie
+
+Recording "no cookies please" by setting a cookie is absurd, and the choice
+only gates client-side scripts. Nothing non-essential is loaded today; the
+`analyticsAllowed` gate exists so that when Plausible or an ads pixel lands it
+cannot be added without passing through consent. Absence of a decision is not
+consent.
+
 ## 2026-08-29 — Admin lives at a real `/admin` URL segment
 
 Next route groups do not contribute to the URL. `app/(admin)/leads/page.tsx`
