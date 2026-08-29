@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto'
 import bcrypt from 'bcryptjs'
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '../generated/client'
 
 /**
  * P1-L-018 — development seed.
