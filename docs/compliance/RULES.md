@@ -40,3 +40,18 @@ This is not legal advice. It is build policy. Confirm final wording with Execune
 - Public pages that are legally unfinished stay noindex.
 - AuditEvent on lead create, consent change, login, document access (later).
 - Client data never sent to a vendor that trains on prompts.
+
+## Data residency
+
+Supabase has no `af-south-1` region. The development database
+(`execuneed-dev`) is in `eu-central-1` — Frankfurt. POPIA permits transfer to a
+jurisdiction with comparable protection, and the EU qualifies, but this must be
+stated in the privacy policy and confirmed with Execuneed's key individual
+before go-live. Production hosting has not been chosen yet; if SA residency is
+required, that decision has to be made before real client data is loaded.
+
+**Row Level Security is currently disabled on all nine tables.** The app reaches
+Postgres through Prisma with a direct connection, but the Supabase PostgREST API
+is also live on the same tables and its anon key is designed to be public. Until
+RLS is enabled, anyone holding that key can read every lead, person and consent
+row. See `docs/plan/STATUS.md`.
