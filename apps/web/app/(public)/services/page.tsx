@@ -20,7 +20,7 @@ export default function ServicesPage() {
       <div className="grid gap-6 sm:grid-cols-2">
         {copy.services.items.map((item) => (
           <Card key={item.key}>
-            <CardTitle>{item.title}</CardTitle>
+            <CardTitle as="h2">{item.title}</CardTitle>
             <CardBody className="mt-2">{item.body}</CardBody>
           </Card>
         ))}

@@ -14,6 +14,20 @@ export const metadata: Metadata = {
   // Legal entity, FSP and NCR wording are unconfirmed (docs/product/CLIENT_ANSWERS.md).
   // Nothing is crawlable until ALLOW_INDEXING is deliberately set.
   robots: allowIndexing ? undefined : { index: false, follow: false },
+  // These links get shared on WhatsApp and LinkedIn. Without this they render
+  // as a bare URL. No image yet — the brand pack has not been received
+  // (docs/product/CLIENT_ANSWERS.md), and a stock placeholder would be worse.
+  openGraph: {
+    type: 'website',
+    siteName,
+    locale: 'en_ZA',
+    title: siteName,
+    description:
+      'A structured review of the cover you already have, explained in plain language, with a licensed adviser.',
+  },
+  ...(process.env.NEXT_PUBLIC_APP_URL
+    ? { metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL) }
+    : {}),
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

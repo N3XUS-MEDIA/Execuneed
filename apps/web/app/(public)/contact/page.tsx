@@ -16,7 +16,7 @@ export default async function ContactPage() {
 
       <div className="grid gap-6 sm:grid-cols-2">
         <Card>
-          <CardTitle>Talk to us</CardTitle>
+          <CardTitle as="h2">Talk to us</CardTitle>
           <CardBody className="mt-2 flex flex-col gap-2">
             <a
               href={`tel:${copy.contact.phone.replace(/\s/g, '')}`}
@@ -34,7 +34,7 @@ export default async function ContactPage() {
         </Card>
 
         <Card>
-          <CardTitle>Where we are</CardTitle>
+          <CardTitle as="h2">Where we are</CardTitle>
           <CardBody className="mt-2 flex flex-col gap-2">
             <p>{copy.contact.addressCentury}</p>
             <p>{copy.contact.addressMelkbos}</p>
@@ -43,7 +43,7 @@ export default async function ContactPage() {
       </div>
 
       <Card>
-        <CardTitle>Booking a review is faster</CardTitle>
+        <CardTitle as="h2">Booking a review is faster</CardTitle>
         <CardBody className="mt-2 mb-4">
           Send the details once and we come back to you, rather than playing telephone tag.
         </CardBody>
