@@ -1,42 +1,63 @@
 # Status
 
-Phase: **P0 — plan and structure**
-Board state: Lead lane complete, Support lane open
+Phase: **P1 — foundation that can go live**
+Board state: P0 done, P1 implemented and passing, awaiting client answers before go-live
 Last updated: 2026-08-29
 
 ## Focus
 
-| Lane    | Human  | Focus                                       | Status         |
-| ------- | ------ | ------------------------------------------- | -------------- |
-| Lead    | Jared  | P0-L-001 → P0-L-005                         | done           |
-| Support | Deacon | P0-S-001 (primitives), P0-S-004 (copy deck) | ready to claim |
+| Lane | Human | Focus | Status |
+|---|---|---|---|
+| Lead | Jared | P1-L-006 → P1-L-018 | done |
+| Support | Deacon | P1-S-032 polish, design pass, review | briefed on the workspace webhook |
 
-## What landed
+## P1 live-done — verified
 
-- Monorepo installs and builds. `pnpm dev`, `lint`, `typecheck`, `test`, `build` all real — the `echo` placeholders are gone.
-- `apps/web/app/layout.tsx` exists. It was missing, so the App Router had no root.
-- Tailwind wired to `packages/ui/src/tokens.ts` through a preset. One palette, no second colour system.
-- `packages/config` populated: tsconfig base + ESLint flat config.
-- Prisma client exported; `p0_baseline` migration generated and applied. Nine tables live.
-- Auth.js v5 staff sign-in, role gate on `/admin`, `X-Robots-Tag: noindex` on every route until `ALLOW_INDEXING=true`.
+Every line of `DEFINITION_OF_DONE.md` §P1 live-done is covered by
+`apps/web/tests/admin.spec.ts` and passing:
 
-## Blocked
+1. Denise opens `/admin` — redirected to `/login` when anonymous ✅
+2. Signs in as `admin` ✅
+3. Sees a lead created from `/cover-review` ✅
+4. Enquiry consent shows as given ✅
+5. Marketing consent shows true or false exactly as submitted ✅
+6. Score and SLA timestamp visible ✅
+7. `lead.created` audit row written ✅
 
-- **P0-S-002 and P0-S-003 stay `backlog` until P0-S-001 lands.** Both depend on the primitives existing. `P0-L-004` (their other dependency) is done.
-- `pnpm db:migrate` and `pnpm db:seed` need the Supabase database password in `.env`. The migration is already applied to the database; Prisma just has not recorded it locally. See `docs/handoffs/2026-08-29-lead-to-support.md`.
+Public site: footer disclaimer renders from `OrganisationSettings`; sticky
+WhatsApp hides itself while no number is confirmed; legal pages are `noindex`
+unconditionally; every other route is `noindex` while `ALLOW_INDEXING=false`.
 
-## Open questions for Execuneed (not blockers for P0)
+## Not go-live ready — and why
 
-1. Exact legal entity name and juristic-representative wording
-2. FSP / NCR numbers to put in footer
+The build is done. The **content is not cleared**. `ALLOW_INDEXING` must stay
+`false` until `docs/product/CLIENT_ANSWERS.md` is filled in.
+
+## Blocked on Execuneed
+
+1. Exact legal entity name and juristic representative wording
+2. FSP number and NCR number for the footer
 3. Which Discovery product classes they are accredited to market
-4. **Confirm the WhatsApp business number.** The value in `.env.example` looks derived from the landline and is almost certainly wrong.
-5. Confirm staff emails for digest: Wayne, Denise
+4. **The WhatsApp business number.** The value previously in `.env.example`
+   looked like the landline with a `+27 61` prefix attached. It has been
+   removed rather than guessed.
+5. Staff emails for the digest: Wayne, Denise
+6. Discovery Marketing Support contact, for the `NeedsApproval` references
 
-## Next merge window
+## Blocked on Jared
 
-`feat/P0-L-002-scaffold` → `main`. Deacon branches `feat/P0-S-001-ui-primitives` from `main` after that merges.
+- Supabase `execuneed-dev` database password, then:
+  `pnpm --filter @execuneed/db exec prisma migrate resolve --applied 20260829070000_p0_baseline`
+  Local development runs against local Postgres in the meantime.
+- A deploy target. Lighthouse cannot be run meaningfully against `next dev`.
+
+## Next
+
+P2 does not unlock until P1 is live-done in production, per
+`docs/dev/PHASE_UNLOCK.md`. The remaining work is content and design polish,
+not features.
 
 ## Last webhook event
 
-No webhook URL is configured, so events are written to `docs/handoffs/` per `docs/plan/WEBHOOK.md`. Latest: `2026-08-29-lead-to-support.md`.
+`DEV_WORKSPACE_WEBHOOK_URL` is now configured (Google Chat, N3XUS Development
+Workspace). Deacon's brief was posted there on 2026-08-29.
