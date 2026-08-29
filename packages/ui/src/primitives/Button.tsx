@@ -6,10 +6,10 @@ type Variant = 'primary' | 'secondary' | 'ghost' | 'link'
 type Size = 'md' | 'lg'
 
 const variants: Record<Variant, string> = {
-  primary: 'bg-sea text-paper hover:bg-sea/90',
+  primary: 'bg-navy text-paper hover:bg-navy/90',
   secondary: 'border border-line bg-paper text-ink hover:bg-sand/40',
   ghost: 'text-ink hover:bg-sand/40',
-  link: 'text-sea underline underline-offset-4 hover:no-underline',
+  link: 'text-navy underline underline-offset-4 hover:no-underline',
 }
 
 // docs/design: 50+ audience on phones. Nothing below a 44px target.

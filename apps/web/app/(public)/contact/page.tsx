@@ -20,13 +20,13 @@ export default async function ContactPage() {
           <CardBody className="mt-2 flex flex-col gap-2">
             <a
               href={`tel:${copy.contact.phone.replace(/\s/g, '')}`}
-              className="text-lg text-sea hover:underline"
+              className="text-lg text-navy hover:underline"
             >
               {org?.phoneDisplay ?? copy.contact.phone}
             </a>
             <p>{copy.contact.hours}</p>
             {wa ? (
-              <a href={wa} target="_blank" rel="noopener noreferrer" className="text-sea hover:underline">
+              <a href={wa} target="_blank" rel="noopener noreferrer" className="text-navy hover:underline">
                 {copy.cta.whatsapp}
               </a>
             ) : null}

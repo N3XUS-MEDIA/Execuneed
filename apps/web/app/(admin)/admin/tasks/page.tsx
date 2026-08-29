@@ -48,7 +48,7 @@ export default async function AdminTasksPage() {
                       {task.lead ? (
                         <Link
                           href={`/admin/leads/${task.lead.id}`}
-                          className="text-sea underline underline-offset-4"
+                          className="text-navy underline underline-offset-4"
                         >
                           {[task.lead.person.firstName, task.lead.person.lastName]
                             .filter(Boolean)

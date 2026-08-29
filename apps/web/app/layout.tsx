@@ -1,5 +1,25 @@
 import type { Metadata } from 'next'
+import { Inter, Montserrat } from 'next/font/google'
 import './globals.css'
+
+/**
+ * Self-hosted by next/font, which matters here: the CSP in
+ * src/server/securityHeaders.ts pins font-src and style-src to 'self', so a
+ * Google Fonts CDN link would be blocked. next/font downloads the files at
+ * build time and serves them from our own origin.
+ */
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  weight: ['600', '700', '800'],
+  variable: '--font-heading',
+  display: 'swap',
+})
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-body',
+  display: 'swap',
+})
 
 const siteName = process.env.NEXT_PUBLIC_SITE_NAME ?? 'Execuneed Financial Services'
 const allowIndexing = process.env.ALLOW_INDEXING === 'true'
@@ -24,6 +44,7 @@ export const metadata: Metadata = {
     title: siteName,
     description:
       'A structured review of the cover you already have, explained in plain language, with a licensed adviser.',
+    images: [{ url: '/brand/logo.png', width: 1960, height: 420, alt: 'Execuneed' }],
   },
   ...(process.env.NEXT_PUBLIC_APP_URL
     ? { metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL) }
@@ -32,7 +53,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-ZA">
+    <html lang="en-ZA" className={`${montserrat.variable} ${inter.variable}`}>
       <body>{children}</body>
     </html>
   )

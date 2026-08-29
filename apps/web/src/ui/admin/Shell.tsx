@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { copy } from '@/content/copy'
+import { Wordmark } from '@/ui/layout/Wordmark'
 
 const nav = [
   { href: '/admin/leads', label: copy.admin.leads },
@@ -18,12 +19,12 @@ export function AdminShell({
 }) {
   return (
     <div className="flex min-h-dvh flex-col bg-paper sm:flex-row">
-      <aside className="border-b border-line sm:w-56 sm:shrink-0 sm:border-b-0 sm:border-r">
+      <aside className="bg-navy text-paper sm:w-56 sm:shrink-0">
         <div className="px-5 py-5">
-          <Link href="/admin/leads" className="font-heading text-xl text-ink">
-            {copy.brand.name}
+          <Link href="/admin/leads" aria-label="Execuneed admin" className="block">
+            <Wordmark width={150} />
           </Link>
-          <p className="mt-0.5 text-sm text-ink-muted">Practice admin</p>
+          <p className="mt-2 text-sm text-paper/60">Practice admin</p>
         </div>
         <nav aria-label="Admin" className="px-2 pb-4">
           <ul className="flex gap-1 sm:flex-col">
@@ -31,7 +32,7 @@ export function AdminShell({
               <li key={n.href}>
                 <Link
                   href={n.href}
-                  className="flex min-h-[44px] items-center rounded-md px-3 text-ink-muted hover:bg-sand/40 hover:text-ink"
+                  className="flex min-h-[44px] items-center rounded-md px-3 text-paper/75 transition-colors hover:bg-navy-light hover:text-paper"
                 >
                   {n.label}
                 </Link>

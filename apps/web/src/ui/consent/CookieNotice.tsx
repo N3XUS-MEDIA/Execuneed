@@ -57,7 +57,7 @@ export function CookieNotice() {
             We only store what the site needs to work, such as keeping staff signed in. We
             would also like to measure which pages are useful. You can say no and everything
             still works.{' '}
-            <Link href="/legal/cookies" className="text-sea underline underline-offset-4">
+            <Link href="/legal/cookies" className="text-navy underline underline-offset-4">
               Read the cookie policy
             </Link>
             .

@@ -27,7 +27,7 @@ export const Checkbox = React.forwardRef<
     <span
       className={cn(
         'flex size-6 items-center justify-center rounded-sm border border-line bg-white',
-        'group-data-[state=checked]:border-sea group-data-[state=checked]:bg-sea',
+        'group-data-[state=checked]:border-navy group-data-[state=checked]:bg-navy',
       )}
     >
       <CheckboxPrimitive.Indicator className="flex items-center justify-center text-paper">

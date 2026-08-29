@@ -48,7 +48,7 @@ export default async function AdminLeadsPage({
         </div>
         <button
           type="submit"
-          className="min-h-[44px] rounded-md bg-sea px-4 text-paper"
+          className="min-h-[44px] rounded-md bg-navy px-4 text-paper"
         >
           Filter
         </button>
@@ -84,7 +84,7 @@ export default async function AdminLeadsPage({
                     <td className="p-3">
                       <Link
                         href={`/admin/leads/${lead.id}`}
-                        className="text-sea underline underline-offset-4"
+                        className="text-navy underline underline-offset-4"
                       >
                         {[lead.person.firstName, lead.person.lastName].filter(Boolean).join(' ')}
                       </Link>
