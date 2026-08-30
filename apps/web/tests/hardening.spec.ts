@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, type Page } from '@playwright/test'
 
 /**
  * P1 production readiness: the things that must be true before this site is
@@ -141,5 +141,57 @@ test.describe('Discovery product copy', () => {
     await page.goto('/services')
     const links = page.getByRole('link', { name: 'What a review covers' })
     await expect(links).toHaveCount(6)
+  })
+})
+
+test.describe('structured data', () => {
+  // docs/product/EXECUNEED_AI_PLATFORM_PLAN.md §6.1 — pages structured so an
+  // assistant summarising them cites Execuneed rather than guessing.
+  async function jsonLd(page: Page) {
+    return page.$$eval('script[type="application/ld+json"]', (nodes) =>
+      nodes.map((n) => JSON.parse(n.textContent || '{}')),
+    )
+  }
+
+  test('the home page describes the practice, without its unconfirmed identity', async ({
+    page,
+  }) => {
+    await page.goto('/')
+    const blocks = await jsonLd(page)
+    const org = blocks.find((b) => b['@type'] === 'FinancialService')
+    expect(org, 'no FinancialService block').toBeTruthy()
+    expect(org.name).toContain('Execuneed')
+    expect(org.telephone).toBeTruthy()
+
+    // The legal entity, FSP and NCR are still placeholders.
+    const raw = JSON.stringify(blocks)
+    expect(raw).not.toContain('NEEDS_LEGAL')
+    expect(raw).not.toContain('legalName')
+  })
+
+  test('an article carries Article, FAQPage and breadcrumbs that parse', async ({ page }) => {
+    await page.goto('/journal/gap-cover-and-hospital-plans')
+    const blocks = await jsonLd(page)
+    const types = blocks.map((b) => b['@type'])
+    expect(types).toContain('Article')
+    expect(types).toContain('FAQPage')
+    expect(types).toContain('BreadcrumbList')
+
+    const faq = blocks.find((b) => b['@type'] === 'FAQPage')
+    expect(faq.mainEntity.length).toBeGreaterThan(1)
+    expect(faq.mainEntity[0].acceptedAnswer.text.length).toBeGreaterThan(20)
+  })
+
+  test('the gated article publishes no product claim in its data either', async ({ page }) => {
+    await page.goto('/journal/how-discovery-integration-works')
+    const raw = JSON.stringify(await jsonLd(page))
+    expect(raw).not.toMatch(/\b(discount|cashback|premium of|R\d)\b/i)
+  })
+
+  test('the sitemap stays empty while indexing is off', async ({ request }) => {
+    const res = await request.get('/sitemap.xml')
+    expect(res.status()).toBe(200)
+    const body = await res.text()
+    expect(body).not.toContain('<loc>')
   })
 })

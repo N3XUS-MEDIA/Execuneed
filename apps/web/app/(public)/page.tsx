@@ -5,6 +5,9 @@ import { heroFacts, processSteps, serviceSnapshot } from '@/content/home'
 import { productsCopy } from '@/content/products'
 import { Container } from '@/ui/layout/Container'
 import { Section, SectionHeading } from '@/ui/layout/Section'
+import { JsonLd } from '@/ui/seo/JsonLd'
+import { organisationLd } from '@/content/structuredData'
+import { getOrganisationSettings } from '@/server/org'
 import { HexMark, HexRule } from '@/ui/brand/HexMark'
 
 /**
@@ -15,9 +18,12 @@ import { HexMark, HexRule } from '@/ui/brand/HexMark'
  * one flat background. With no photography available that tonal rhythm is what
  * gives the page structure at a glance.
  */
-export default function HomePage() {
+export default async function HomePage() {
+  const org = await getOrganisationSettings()
+
   return (
     <>
+      <JsonLd data={organisationLd(org, process.env.NEXT_PUBLIC_APP_URL)} />
       {/* Hero. A cool wash off the top so the page does not start on a flat
           field of paper directly under the navy header. */}
       <div className="bg-gradient-to-b from-sand/60 via-paper to-paper">
