@@ -114,3 +114,36 @@ Deacon / Support Claude appends here each session. Do not replace Lead plan file
   that PR touches. Four new Playwright tests, one per defect.
 - Blocked: the VoiceOver-on-iOS-Safari item stays open. It needs a handset, and
   it should not be ticked off on the strength of the automated suite.
+
+### 2026-08-30 (6)
+- Claimed: the concierge launcher, on Deacon's instruction. This overlaps
+  `P2-L-070`, which is Lead's and is `backlog`.
+- Done: the Execuneed icon as the launcher, and the capture half of the
+  concierge behind it.
+  - The launcher is the icon and nothing else — no circle, no pill, no card, no
+    shadow, no chat glyph on top of it. Same file as the browser tab and the
+    home screen icon.
+  - Not rendered on `/cover-review` or its confirmation. The form is already
+    there, and a floating button in the bottom corner lands on the submit
+    button at 375px.
+  - **It answers nothing.** Fixed script, no model, no retrieval. `P2-L-070`
+    scopes answering to content with a stored Discovery approval reference, and
+    `DISCOVERY_APPROVALS.md` records that nothing has been submitted — so the
+    corpus is empty and refusal is the ticket's own stated default. What a
+    visitor types is carried into the enquiry as the message, never answered.
+  - Consent is captured exactly as the web form captures it: two fields, two
+    checkboxes, neither pre-ticked, the deck's wording, and the same
+    `createLeadAction` doing the validating and the writing.
+  - Carries the §Public AI disclaimer from `DISCLAIMERS.md` verbatim, as the
+    ticket requires.
+- Review: `feat/concierge-launcher`, stacked on the journal branch.
+  118 unit and 87 Playwright tests green. Contrast and tap targets audited
+  inside the panel at 375 and 1280 in both states: no findings.
+- Notes for Lead:
+  - `P2-L-070` stays open. This is its capture half; the RAG half is still
+    blocked on `P2-L-039` and on an approved corpus.
+  - There is no `chat` value in the `LeadSource` enum, so concierge enquiries
+    are written as `web`. If you want them separable in the inbox, that is one
+    enum value in your schema and one line here.
+  - `AI_PUBLIC_ENABLED` is untouched and still false. Nothing here reads it,
+    because nothing here calls a model.

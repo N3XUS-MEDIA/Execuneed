@@ -1,8 +1,10 @@
-import { getOrganisationSettings } from '@/server/org'
+import { getOrganisationSettings, whatsappHref } from '@/server/org'
+import { copy } from '@/content/copy'
 import { SiteHeader } from '@/ui/layout/SiteHeader'
 import { SiteFooter } from '@/ui/layout/SiteFooter'
 import { MobileActionBar } from '@/ui/layout/MobileActionBar'
 import { CookieNotice } from '@/ui/consent/CookieNotice'
+import { ConciergeLauncher } from '@/ui/concierge/ConciergeLauncher'
 
 /**
  * The footer disclaimer, phone number and WhatsApp link all come from
@@ -23,6 +25,7 @@ export const revalidate = 300
 
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
   const org = await getOrganisationSettings()
+  const wa = whatsappHref(org?.whatsappE164, copy.whatsapp.prefill)
 
   return (
     <div className="flex min-h-dvh flex-col">
@@ -46,6 +49,7 @@ export default async function PublicLayout({ children }: { children: React.React
           scrolled clear of — it must never sit on a submit button. */}
       <div className="h-[var(--action-bar-h)] shrink-0 lg:hidden" aria-hidden="true" />
       <MobileActionBar e164={org?.whatsappE164} />
+      <ConciergeLauncher whatsappHref={wa} />
       <CookieNotice />
     </div>
   )
