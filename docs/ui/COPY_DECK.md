@@ -102,6 +102,32 @@ Tone: calm, Cape Town professional, family-first. No scare tactics. No fake urge
 | form.thanks.title | final | We have the request. |
 | form.thanks.body | final | An adviser or Denise will come back to you. If it is urgent, use WhatsApp now. |
 
+## Site concierge
+
+Every sentence the concierge is able to say. It is a fixed script with no model
+behind it, so this table is exhaustive — implemented in
+`apps/web/src/content/concierge.ts`.
+
+| key | status | copy |
+|---|---|---|
+| concierge.launcher | final | Ask Execuneed |
+| concierge.title | final | Execuneed |
+| concierge.subtitle | final | Here to get you to the right person |
+| concierge.disclaimer | final | From docs/compliance/DISCLAIMERS.md §Public AI, verbatim |
+| concierge.greeting | final | Hello. I can book you a complimentary cover review, point you at the right page, or put you through to the practice. |
+| concierge.limits | final | I cannot answer questions about products, premiums or which plan suits you. Those need a licensed adviser who has seen your details. |
+| concierge.options.book | final | Book a cover review |
+| concierge.options.services | final | What do you help with? |
+| concierge.options.talk | final | Talk to someone |
+| concierge.refusal | final | I am not able to answer that here — I would be guessing, and this is the sort of question a licensed adviser should answer with your details in front of them. |
+| concierge.refusalOffer | final | I can have someone call you about it. Would that help? |
+| concierge.capture.submit | final | Send this to the practice |
+| concierge.capture.consent.enquiry | final | Same as form.consent.enquiry — the deck string, not a paraphrase |
+| concierge.capture.consent.marketing | final | Same as form.consent.marketing — the deck string, not a paraphrase |
+
+The refusal does not vary with the question. Varying it is how a script starts
+sounding like it knows the answer.
+
 ## Admin chrome
 
 | key | status | copy |

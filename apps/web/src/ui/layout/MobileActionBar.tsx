@@ -73,7 +73,8 @@ export function MobileActionBar({ e164 }: { e164: string | null | undefined }) {
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className="fixed bottom-6 right-6 z-40 hidden min-h-[52px] items-center gap-2 rounded-lg bg-ok px-5 text-base text-paper shadow-lg lg:inline-flex"
+          // Sits above the concierge launcher, which owns the bottom-right corner.
+          className="fixed bottom-28 right-6 z-40 hidden min-h-[52px] items-center gap-2 rounded-lg bg-ok px-5 text-base text-paper shadow-lg lg:inline-flex"
         >
           <WhatsAppGlyph className="size-5" />
           {copy.cta.whatsapp}

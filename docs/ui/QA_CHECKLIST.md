@@ -5,7 +5,7 @@ Owner: Support. Re-run before any release that touches public pages.
 Most of this is automated. `pnpm --filter @execuneed/web exec playwright test`
 runs all of it; the manual items below are the ones a machine cannot judge.
 
-## Automated (79 checks, `apps/web/tests/`)
+## Automated (87 checks, `apps/web/tests/`)
 
 ### Consent — `lead-form.spec.ts`
 
@@ -35,6 +35,19 @@ runs all of it; the manual items below are the ones a machine cannot judge.
 | Consent record renders verbatim on the lead file | pass |
 | The web enquiry is already on the timeline | pass |
 | A `client`-role account cannot reach `/admin` | pass |
+
+### Site concierge — `concierge.spec.ts`
+
+| Check | Status |
+|---|---|
+| The launcher is the icon, and is at least 44px in both directions | pass |
+| It does not appear on `/cover-review`, where the form already is | pass |
+| It opens carrying the §Public AI disclaimer, verbatim | pass |
+| **A product question is refused, and nothing that reads as an answer is produced** | pass |
+| A booking made through it persists `marketing` as false when not ticked | pass |
+| A marketing opt-in through it persists as its own field, with its channel | pass |
+| It writes nothing without enquiry consent, and says which box is blocking | pass |
+| Escape closes it and hands focus back to the launcher | pass |
 
 ### Responsive — `responsive.spec.ts`
 
