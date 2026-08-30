@@ -9,6 +9,15 @@ import { CookieNotice } from '@/ui/consent/CookieNotice'
  * `OrganisationSettings`, which the practice has to be able to change without
  * a deploy. Without this the public pages prerender once at build time and the
  * legal wording freezes into the bundle.
+ *
+ * It also has a consequence worth knowing about. These pages stop being purely
+ * static and become revalidating, so on a cold cache Next streams the shell
+ * first and fills the page in behind it. There used to be a `loading.tsx` in
+ * this segment; against a 5,000px page its ~460px skeleton produced a 0.56
+ * cumulative layout shift as the footer dropped into place, measured on the
+ * first request after a deploy. It was removed rather than resized — no honest
+ * skeleton can reserve the height of these pages, and they are prerendered, so
+ * there is nothing slow to cover.
  */
 export const revalidate = 300
 
