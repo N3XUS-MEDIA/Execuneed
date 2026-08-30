@@ -94,3 +94,23 @@ Deacon / Support Claude appends here each session. Do not replace Lead plan file
     actually changes.
 - Review: added to `feat/P2-S-043-journal` (PR #22).
 - Blocked: nothing.
+
+### 2026-08-30 (5)
+- Claimed: the accessibility sweep on the lead form (item 3 of the P1 support
+  brief, still open in the QA checklist).
+- Done: walked the form as assistive technology does — tab order, accessible
+  names, required/invalid state, resolved `aria-describedby`, and the same
+  again after a failed submit. Three defects found and fixed:
+  - the submit button was `disabled` and therefore not in the tab order at all,
+    so the sentence explaining why it would not work was attached to an element
+    nobody could reach. Now `aria-disabled`, with the gate enforced in the
+    submit handler instead. `toBeDisabled()` still passes.
+  - a field validation failure was announced nowhere and left focus on the
+    submit button. Now announced in the live region, with focus moved to the
+    first invalid control.
+  - optional fields had accessible names like "Last nameOptional" — my own
+    regression from the design pass.
+- Review: on `feat/P2-design-pass` (PR #21), since two of the three are in code
+  that PR touches. Four new Playwright tests, one per defect.
+- Blocked: the VoiceOver-on-iOS-Safari item stays open. It needs a handset, and
+  it should not be ticked off on the strength of the automated suite.

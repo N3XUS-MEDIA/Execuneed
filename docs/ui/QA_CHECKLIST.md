@@ -5,7 +5,7 @@ Owner: Support. Re-run before any release that touches public pages.
 Most of this is automated. `pnpm --filter @execuneed/web exec playwright test`
 runs all of it; the manual items below are the ones a machine cannot judge.
 
-## Automated (75 checks, `apps/web/tests/`)
+## Automated (79 checks, `apps/web/tests/`)
 
 ### Consent — `lead-form.spec.ts`
 
@@ -19,6 +19,10 @@ runs all of it; the manual items below are the ones a machine cannot judge.
 | Landline in the mobile field is rejected on the field | pass |
 | **A validation error does not wipe what the visitor typed** | pass |
 | Public pages send `X-Robots-Tag: noindex` | pass |
+| The blocked submit button is still reachable from the keyboard, and says why | pass |
+| Pressing the blocked submit moves focus to the consent box | pass |
+| A validation failure is announced, and focus moves to the field | pass |
+| Optional fields do not run their label into the word "optional" | pass |
 | Anonymous visitors are redirected away from `/admin` | pass |
 
 ### P1 live-done — `admin.spec.ts`
@@ -177,10 +181,11 @@ Nothing on the public pages is below AA. Alpha values under `navy/65` and
 
 These need a person, and several need answers from the practice first.
 - [ ] **Screen reader pass through the lead form (VoiceOver, iOS Safari).**
-      Automated checks cover labels and `aria-describedby`; they do not tell
-      you whether the flow makes sense out loud. This one genuinely needs a
-      handset — it has not been done and should not be ticked off on the
-      strength of the automated suite.
+      Still open, and still needs a handset. See the keyboard and
+      accessibility-tree pass below for what was done instead — not a
+      substitute, but it found and fixed three real defects, so the VoiceOver
+      run is now about whether the flow *reads well* rather than whether it is
+      navigable at all.
 - [ ] Check the footer disclaimer once the real wording exists. The slot is
       empty in production today, which is deliberate: `discoveryJuristicText`
       is blank and `Disclaimer` renders nothing rather than a placeholder.
@@ -194,6 +199,43 @@ These need a person, and several need answers from the practice first.
 - [ ] Re-check the CSP once analytics or a chat widget is added. `connect-src`
       and `script-src` are locked to `'self'`; a third-party script will be
       blocked until its origin is added deliberately.
+
+## Keyboard and accessibility-tree pass — lead form
+
+Not a screen reader pass, and not a substitute for one. It walks the form the
+way assistive technology does — every tab stop in order, with each control's
+accessible name, its required and invalid state, and whatever its
+`aria-describedby` actually resolves to — then does the same again after a
+failed submission.
+
+Three defects came out of it, all fixed and now covered by tests.
+
+**The submit button was not in the tab order at all.** It carried `disabled`,
+so a keyboard user went from the last consent checkbox straight to the phone
+number in the sidebar. They never met the button, and never heard the sentence
+explaining why it would not work — the sentence was attached to it with
+`aria-describedby`, on an element that could not be focused.
+
+It is `aria-disabled` now. Still announced as disabled, and
+`expect(submit).toBeDisabled()` still passes, but reachable and it says why.
+The consent gate is unchanged and enforced in three places: the submit handler,
+`createLeadSchema` (`contactForEnquiry: z.literal(true)`), and again at the
+point of the write. Pressing it while blocked moves focus to the consent box.
+
+**A validation failure was silent.** Field errors render beside their input,
+invisible to anyone not looking at the screen, and focus stayed on the submit
+button — so pressing it appeared to do nothing. The live region now carries the
+summary and focus moves to the first invalid control, which reads its own
+message out of `aria-describedby`.
+
+**Optional fields read as one word.** The accessible name of the last name
+field was literally "Last nameOptional". Same for suburb and children at home.
+They read "Last name — optional" now.
+
+What a VoiceOver run on a handset would still add: whether the three numbered
+steps help or interrupt, whether the consent wording is clear read aloud, and
+how the sticky action bar behaves with the rotor. Those are judgements, not
+assertions.
 
 ## Blocked on the practice
 
