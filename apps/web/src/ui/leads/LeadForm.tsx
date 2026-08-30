@@ -51,9 +51,12 @@ export function LeadForm({ source = 'web' }: { source?: string }) {
     event.preventDefault()
 
     // The button is aria-disabled rather than disabled, so this is where the
-    // gate is actually enforced on the client. Pressing it without the enquiry
-    // box ticked moves focus to the box instead of doing nothing silently.
-    if (!enquiry || pending) {
+    // gate is actually enforced on the client.
+    if (pending) return
+    // Pressing it without the enquiry box ticked sends you to the box, rather
+    // than doing nothing silently. Only for that case — a second press while a
+    // submission is in flight should not yank focus off the button.
+    if (!enquiry) {
       document.getElementById(`${formId}-contactForEnquiry`)?.focus()
       return
     }
