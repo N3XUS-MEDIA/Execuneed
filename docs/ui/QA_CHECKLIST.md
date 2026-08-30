@@ -85,6 +85,44 @@ Three real issues came out of the first run and are fixed:
   bare URL. Added, without an image — a stock placeholder would be worse than
   none.
 
+### Re-run after the P2 design pass
+
+Same method, local production build, `next start` on :3300. Run against the
+design pass and the journal together, and against `main` on the same machine
+minutes apart so the comparison means something.
+
+| Page | Performance | Accessibility | Best practices | LCP | CLS |
+|---|---|---|---|---|---|
+| `/` | 96 | 100 | 100 | 2.7s | 0 |
+| `/cover-review` | 97 | 100 | 100 | 2.7s | 0 |
+| `/services` | 97 | 100 | 100 | 2.7s | 0 |
+| `/contact` | 96 | 100 | 100 | 2.7s | 0 |
+| `/journal` | 97 | 100 | 100 | 2.7s | 0 |
+
+`main` measured 96 with CLS 0 on `/` in the same session, so the redesign is
+level on performance and unchanged on accessibility.
+
+**The run earned its keep.** The first pass came back at 72–73 with a
+**0.563 CLS** on `/`, `/services`, `/cover-review` and `/journal`, and clean on
+`/how-we-work`, `/legal/privacy` and `/cover-review/thanks`. The length
+correlation was the clue.
+
+`export const revalidate = 300` on the public layout — added so the practice can
+change the footer's legal wording without a deploy — stops those pages being
+purely static. On a cold cache Next streams the shell and uses `loading.tsx` as
+the fallback, so the first paint was a ~460px skeleton with the footer directly
+beneath it. The real pages are 4,000–5,000px, and the footer then dropped a full
+viewport height. The Lighthouse filmstrip showed it directly: one frame of
+skeleton-plus-footer, the next of the real page.
+
+`app/(public)/loading.tsx` was removed rather than resized. No honest skeleton
+can reserve the height of these pages, and they are prerendered, so there is
+nothing slow for one to cover. The admin segment keeps its own `loading.tsx`,
+where the pages really do wait on a query.
+
+Worth repeating on the deployment once this is merged — a cold ISR cache behaves
+differently behind a CDN than it does on a laptop.
+
 ### Confirmed on the live deployment
 
 Re-run against `https://execuneed-gold.vercel.app` — real network, real CDN:
