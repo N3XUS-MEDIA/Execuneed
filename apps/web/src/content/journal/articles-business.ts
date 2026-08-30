@@ -74,6 +74,6 @@ export const businessArticles: JournalArticle[] = [
     approvalRef: null,
     figuresNote:
       'The tax treatment of premiums and proceeds depends on ownership and structure, and on legislation that changes. Confirm the current position with a tax professional before relying on it.',
-    related: ['income-protection-and-an-emergency-fund', 'changing-jobs-and-the-cover-you-had-at-work'],
+    related: ['car-and-home-cover-on-autopilot', 'income-protection-and-an-emergency-fund'],
   },
 ]

@@ -9,8 +9,24 @@ import { findArticle, journalArticles, relatedTo } from './index'
  * than a services page does, so it needs the gate more, not less.
  */
 describe('journal content', () => {
-  it('ships the eight cornerstone articles', () => {
-    expect(journalArticles).toHaveLength(8)
+  it('ships the nine cornerstone articles', () => {
+    expect(journalArticles).toHaveLength(9)
+  })
+
+  it('covers every services category', () => {
+    // A services category with no article behind it is a gap a reader falls
+    // into: the page describes the need and then has nowhere to send them.
+    const covered = new Set(journalArticles.map((a) => a.category))
+    for (const category of [
+      'Medical aid',
+      'Protection',
+      'Retirement',
+      'Short-term',
+      'Business',
+      'Life events',
+    ] as const) {
+      expect(covered.has(category), `no article for ${category}`).toBe(true)
+    }
   })
 
   it('publishes no Discovery claim without an approval reference', () => {

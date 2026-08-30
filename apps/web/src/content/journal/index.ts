@@ -2,13 +2,18 @@ import { medicalArticles } from './articles-medical'
 import { protectionArticles } from './articles-protection'
 import { planningArticles } from './articles-planning'
 import { businessArticles } from './articles-business'
+import { shortTermArticles } from './articles-short-term'
 import { gatedArticles } from './articles-gated'
 import type { JournalArticle } from './types'
 
 export type { JournalArticle, JournalCategory, JournalSection } from './types'
 
 /**
- * P2-S-043 — the eight cornerstone articles.
+ * P2-S-043 — the cornerstone articles.
+ *
+ * Eight were the ticket. The ninth, on short-term cover, was added afterwards
+ * because the Short-term services category had no article behind it and the
+ * renewal-on-autopilot problem is one the practice is asked about constantly.
  *
  * Order is editorial: the ones that answer the most common question first.
  */
@@ -17,6 +22,7 @@ export const journalArticles: JournalArticle[] = [
   ...protectionArticles,
   ...planningArticles,
   ...businessArticles,
+  ...shortTermArticles,
   ...gatedArticles,
 ]
 

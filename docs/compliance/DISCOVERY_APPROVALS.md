@@ -50,7 +50,7 @@ from the practice's own brief; the wording is ours.
 `how-discovery-integration-works` is the one article on the site whose whole
 subject needs approval. It is published with its body deliberately empty and an
 explanation of why — see `apps/web/src/content/journal/articles-gated.ts`. The
-seven other articles carry no product claim at all and their `claims` arrays are
+eight other articles carry no product claim at all and their `claims` arrays are
 empty for that reason rather than because approval is pending.
 
 Nothing has been submitted, because `docs/product/CLIENT_ANSWERS.md` still has

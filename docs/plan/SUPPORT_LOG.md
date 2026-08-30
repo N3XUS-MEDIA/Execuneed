@@ -78,3 +78,19 @@ Deacon / Support Claude appends here each session. Do not replace Lead plan file
     which is the problem" — is the obvious next one. The Short-term services
     category has no journal article. I did not write it into this PR because
     the ticket says eight.
+
+### 2026-08-30 (4)
+- Claimed: the ninth journal article, on Deacon's instruction.
+- Done: `car-and-home-cover-on-autopilot` — "Short-term cover renews itself,
+  which is the problem".
+  - It closes the last gap between the services categories and the journal.
+    Every category now has an article behind it, and `journal.test.ts` asserts
+    that rather than leaving it to be noticed later.
+  - Same gate as the rest: no product named, no premium, no benefit claimed,
+    and a `figuresNote` saying that average clauses and excess structures are
+    policy wording rather than legislation and differ between insurers.
+  - Related links rewired: buying a home and the business article both point at
+    it, because those are the two moments a household's short-term exposure
+    actually changes.
+- Review: added to `feat/P2-S-043-journal` (PR #22).
+- Blocked: nothing.

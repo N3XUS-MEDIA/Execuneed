@@ -140,6 +140,6 @@ export const planningArticles: JournalArticle[] = [
     ],
     claims: [],
     approvalRef: null,
-    related: ['income-protection-and-an-emergency-fund', 'changing-jobs-and-the-cover-you-had-at-work'],
+    related: ['car-and-home-cover-on-autopilot', 'income-protection-and-an-emergency-fund'],
   },
 ]
