@@ -191,6 +191,9 @@ export function ConciergePanel({
         ) : null}
       </div>
 
+      {/* Nothing to offer in the capture step — the form is the affordance, and
+          an empty bordered strip under it just looks like a mistake. */}
+      {step.name === 'capture' ? null : (
       <div className="border-t border-line bg-paper px-4 py-3 sm:px-5">
         {step.name === 'menu' || step.name === 'services' || step.name === 'talk' ? (
           <>
@@ -282,6 +285,7 @@ export function ConciergePanel({
           </Button>
         ) : null}
       </div>
+      )}
     </div>
   )
 }
