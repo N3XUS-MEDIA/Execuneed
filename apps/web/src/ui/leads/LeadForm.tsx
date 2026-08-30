@@ -49,6 +49,15 @@ export function LeadForm({ source = 'web' }: { source?: string }) {
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
+
+    // The button is aria-disabled rather than disabled, so this is where the
+    // gate is actually enforced on the client. Pressing it without the enquiry
+    // box ticked moves focus to the box instead of doing nothing silently.
+    if (!enquiry || pending) {
+      document.getElementById(`${formId}-contactForEnquiry`)?.focus()
+      return
+    }
+
     const formData = new FormData(event.currentTarget)
     const channels = formData.getAll('channels').map(String)
     const raw = {
@@ -80,12 +89,16 @@ export function LeadForm({ source = 'web' }: { source?: string }) {
         return
       }
       setError(res.error)
-      // Put the caret on the first thing that needs fixing. Field keys match
-      // the control ids.
+      // Move to the first thing that needs fixing. Field keys match the control
+      // ids. Focus rather than only scroll: without it the caret stays on the
+      // submit button and, for anyone not looking at the screen, pressing it
+      // appears to have done nothing at all.
       const firstField = res.error.fields ? Object.keys(res.error.fields)[0] : undefined
       if (firstField) {
         requestAnimationFrame(() => {
-          document.getElementById(`${formId}-${firstField}`)?.scrollIntoView({ block: 'center' })
+          const control = document.getElementById(`${formId}-${firstField}`)
+          control?.scrollIntoView({ block: 'center' })
+          control?.focus({ preventScroll: true })
         })
       }
     })
@@ -109,7 +122,10 @@ export function LeadForm({ source = 'web' }: { source?: string }) {
   }
 
   const labelClass = 'font-medium text-ink'
-  const optional = <span className="ml-2 font-normal text-ink-muted">Optional</span>
+  // The leading space matters: without it the accessible name of the field is
+  // "Last nameOptional", which is what a screen reader reads out. Found in the
+  // P2 keyboard and accessibility-tree pass.
+  const optional = <span className="font-normal text-ink-muted"> — optional</span>
 
   return (
     <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-10" data-testid="lead-form">
@@ -120,6 +136,13 @@ export function LeadForm({ source = 'web' }: { source?: string }) {
             {error.message}
           </Alert>
         ) : null}
+        {/*
+          Field errors are rendered beside their input, which is silent for
+          anyone not looking at the screen. This says what happened; focus then
+          moves to the field, which reads its own message out of
+          aria-describedby.
+        */}
+        {error?.fields ? <p className="sr-only">{error.message}</p> : null}
       </div>
 
       {/*
@@ -370,10 +393,10 @@ export function LeadForm({ source = 'web' }: { source?: string }) {
         <Button
           type="submit"
           size="lg"
-          disabled={pending || !enquiry}
+          aria-disabled={pending || !enquiry}
           aria-busy={pending}
           aria-describedby={!enquiry ? `${formId}-submit-blocked` : undefined}
-          className="w-full sm:w-auto sm:self-start sm:px-10"
+          className="w-full aria-disabled:opacity-50 sm:w-auto sm:self-start sm:px-10"
         >
           {pending ? 'Sending…' : copy.form.submit}
         </Button>

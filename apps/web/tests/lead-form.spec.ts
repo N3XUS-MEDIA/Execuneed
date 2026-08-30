@@ -135,3 +135,65 @@ test('anonymous visitors are redirected away from admin', async ({ page }) => {
   await page.goto('/admin/leads')
   await expect(page).toHaveURL(/\/login/)
 })
+
+test('the submit button is reachable from the keyboard even while it is blocked', async ({
+  page,
+}) => {
+  // It used to carry `disabled`, which took it out of the tab order entirely:
+  // a keyboard user walked from the last consent box to the phone number in
+  // the sidebar and never met the button, let alone the sentence saying why it
+  // would not work. It is aria-disabled now, and the gate is enforced in the
+  // submit handler, in createLeadSchema and again at the point of the write.
+  await page.goto('/cover-review')
+
+  const submit = page.getByRole('button', { name: 'Request a review' })
+  await expect(submit).toBeDisabled()
+
+  await submit.focus()
+  await expect(submit).toBeFocused()
+
+  const described = await submit.getAttribute('aria-describedby')
+  expect(described, 'the blocked button must say why').toBeTruthy()
+  await expect(page.locator(`#${described}`)).toHaveText(
+    'We need your permission to contact you about this enquiry.',
+  )
+})
+
+test('pressing the blocked submit sends you to the consent box', async ({ page }) => {
+  await fillBasics(page, '0821110009')
+
+  // `force` because Playwright treats aria-disabled as not-enabled and would
+  // wait for it. A person with a mouse can press it, which is the whole point
+  // of the button being reachable rather than removed from the page.
+  await page.getByRole('button', { name: 'Request a review' }).click({ force: true })
+
+  await expect(page.getByLabel('Please contact me about this enquiry.')).toBeFocused()
+  const { person } = await consentFor('+27821110009')
+  expect(person).toBeNull()
+})
+
+test('a validation failure is announced and takes focus to the field', async ({ page }) => {
+  // A red message beside an input, three screens up, is silent for anyone not
+  // looking at the screen.
+  await page.goto('/cover-review')
+  await page.getByLabel('First name').fill('Thandi')
+  await page.getByLabel('Mobile number').fill('021 552 8989')
+  await page.getByLabel('Please contact me about this enquiry.').click()
+  await page.getByRole('button', { name: 'Request a review' }).click()
+
+  await expect(page.getByLabel('Mobile number')).toBeFocused()
+  await expect(page.getByLabel('Mobile number')).toHaveAttribute('aria-invalid', 'true')
+
+  // Scoped to the form: Next ships its own assertive route announcer.
+  const live = page.getByTestId('lead-form').locator('[aria-live="assertive"]')
+  await expect(live).toContainText('Please check the highlighted fields.')
+})
+
+test('optional fields do not run their label into the word optional', async ({ page }) => {
+  // The accessible name was "Last nameOptional", which is what a screen reader
+  // reads out. Caught by walking the tab order rather than by looking.
+  await page.goto('/cover-review')
+  for (const name of ['Last name — optional', 'Suburb — optional', 'Children at home — optional']) {
+    await expect(page.getByLabel(name)).toBeVisible()
+  }
+})
