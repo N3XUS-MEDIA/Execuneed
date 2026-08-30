@@ -137,8 +137,26 @@ can reserve the height of these pages, and they are prerendered, so there is
 nothing slow for one to cover. The admin segment keeps its own `loading.tsx`,
 where the pages really do wait on a query.
 
-Worth repeating on the deployment once this is merged — a cold ISR cache behaves
-differently behind a CDN than it does on a laptop.
+### Confirmed on production after the P2 merge
+
+Repeated against `https://execuneed-gold.vercel.app` once the design pass, the
+journal and the concierge were on `main` — real CDN, real network, cold ISR
+cache. This is what closes the item; the numbers above are from a laptop.
+
+| Page | Performance | Accessibility | Best practices | LCP | CLS |
+|---|---|---|---|---|---|
+| `/` | 99 | 100 | 100 | 2.0s | 0 |
+| `/cover-review` | 98 | 100 | 100 | 2.2s | 0 |
+| `/journal` | 99 | 100 | 100 | 2.2s | 0 |
+
+CLS is 0 behind the CDN too, which was the open question — the skeleton removal
+was the fix, not a local artefact. LCP improved on the laptop numbers rather
+than regressing.
+
+Also verified live: the concierge launcher renders at 56×56, opens, carries the
+§Public AI disclaimer, and refuses "which plan is cheapest?".
+
+**This item is closed.**
 
 ### Confirmed on the live deployment
 

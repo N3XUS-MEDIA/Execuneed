@@ -180,3 +180,20 @@ _None yet._
     enum value in your schema and one line here.
   - `AI_PUBLIC_ENABLED` is untouched and still false. Nothing here reads it,
     because nothing here calls a model.
+
+### 2026-08-30 (7)
+- Claimed: merging the four open support PRs, on Deacon's instruction.
+- Done: #21, #22, #24, #23 squashed onto `main` in that order. Each branch was
+  rebased onto the newly-squashed `main` before merging and its CI re-run on
+  the rebased head, so nothing merged on the strength of a check against a
+  different tree. #23's `SUPPORT_LOG.md` conflict was resolved by keeping both
+  sets of entries in date order.
+- Verified after: 133 unit and 87 Playwright tests green on `main`, CI green on
+  the merge commit, production deployed at `66b6f57`, `X-Robots-Tag: noindex`
+  still set.
+- Closed: the Lighthouse-on-a-deployment item. Production measures 99 / 98 / 99
+  performance, 100 accessibility, 100 best practices, CLS 0 — so the skeleton
+  removal holds behind a CDN and was not a local artefact. Recorded in
+  `docs/ui/QA_CHECKLIST.md`.
+- Still open: the VoiceOver pass on iOS Safari. It needs a handset.
+- Not mine: `ALLOW_INDEXING` stays unset until `CLIENT_ANSWERS.md` is filled in.
