@@ -79,6 +79,39 @@ Deacon / Support Claude appends here each session. Do not replace Lead plan file
     category has no journal article. I did not write it into this PR because
     the ticket says eight.
 
+_None yet._
+
+### 2026-08-30 (3)
+- Claimed: P2-S-044, digest email HTML.
+- Done: `apps/web/src/ui/email/digest.ts` — `renderDigestHtml`, `digestSubject`
+  and `escapeHtml`, with fifteen tests.
+  - Template only, as the handoff says. Nothing in `src/server` was touched, so
+    `runDailyDigest` still returns the plain-text body and nothing calls this
+    yet. Lead wires it when there is a transport.
+  - Tables and inline styles, because Outlook on Windows renders through Word
+    and Gmail strips much of a `<style>` block. The one `<style>` block carries
+    the responsive rules only, so losing it costs nothing that matters.
+  - Colours come from `packages/ui` tokens, so the mail matches the site and
+    there is still one palette. No web fonts — Montserrat is named first with a
+    real fallback behind it.
+  - Every interpolated value is escaped. This email carries names typed into a
+    public form and is opened in staff mail clients; two of the tests exist
+    only to prove that.
+- Review: `feat/P2-S-044-digest-html`, branched from `main` — it does not depend
+  on the design pass or the journal. 124 unit tests green.
+- Blocked: nothing.
+- Notes for Lead:
+  - To wire it: `import { renderDigestHtml, digestSubject } from '@/ui/email/digest'`
+    in `src/server/jobs/dailyDigest.ts` and return `{ subject, text: body, html }`
+    from `runDailyDigest`. `renderDigest` stays as the text part of the
+    multipart message rather than being replaced.
+  - Leads link to `/admin/leads/{id}` when `NEXT_PUBLIC_APP_URL` is set, and
+    render as plain names when it is not.
+  - The digest cannot show consent state, which is the thing Denise would most
+    want beside a name before she picks up the phone. `recentLeads` in
+    `dailyDigest.ts` does not include `consents`. One line in your query and I
+    will add the badge.
+
 ### 2026-08-30 (4)
 - Claimed: the ninth journal article, on Deacon's instruction.
 - Done: `car-and-home-cover-on-autopilot` — "Short-term cover renews itself,
