@@ -69,3 +69,56 @@ test.describe('tap targets', () => {
     expect(small, `controls under 44px: ${small.join(', ')}`).toEqual([])
   })
 })
+
+test.describe('mobile chrome', () => {
+  test.use({ viewport: { width: 375, height: 667 } })
+
+  test('the sticky action bar never sits on the submit button', async ({ page }) => {
+    // The bar is fixed to the bottom of the viewport. The layout reserves its
+    // height at the end of the document so it can always be scrolled clear of;
+    // without that reservation it lands squarely on "Request a review".
+    await page.goto('/cover-review')
+    await page.evaluate(() =>
+      window.localStorage.setItem(
+        'execuneed.cookie-consent.v1',
+        JSON.stringify({ analytics: 'declined', decidedAt: new Date().toISOString() }),
+      ),
+    )
+    await page.reload()
+
+    const bar = page.getByRole('link', { name: 'Book a review', exact: true })
+    await expect(bar).toBeVisible()
+
+    const submit = page.getByRole('button', { name: 'Request a review' })
+    await submit.scrollIntoViewIfNeeded()
+    // Settle: scrollIntoViewIfNeeded can land the target flush against the bar.
+    await page.mouse.wheel(0, 200)
+    await page.waitForTimeout(200)
+
+    const button = await submit.boundingBox()
+    const overlay = await bar.boundingBox()
+    expect(button).not.toBeNull()
+    expect(overlay).not.toBeNull()
+
+    const overlaps =
+      button!.y < overlay!.y + overlay!.height && button!.y + button!.height > overlay!.y
+    expect(overlaps, 'the action bar overlaps the submit button').toBe(false)
+  })
+
+  test('the nav collapses into a disclosure that opens', async ({ page }) => {
+    await page.goto('/')
+    const nav = page.getByRole('navigation', { name: 'Primary' })
+
+    // Four links across a 375px bar wrapped onto a second row before this.
+    await expect(nav.getByRole('link', { name: 'Cover review', exact: true })).toBeHidden()
+
+    const toggle = page.getByRole('button', { name: 'Open menu' })
+    await expect(toggle).toBeVisible()
+    const box = await toggle.boundingBox()
+    expect(box!.height).toBeGreaterThanOrEqual(44)
+    expect(box!.width).toBeGreaterThanOrEqual(44)
+
+    await toggle.click()
+    await expect(nav.getByRole('link', { name: 'Cover review', exact: true })).toBeVisible()
+  })
+})

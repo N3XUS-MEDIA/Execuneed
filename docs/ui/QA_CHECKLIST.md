@@ -5,7 +5,7 @@ Owner: Support. Re-run before any release that touches public pages.
 Most of this is automated. `pnpm --filter @execuneed/web exec playwright test`
 runs all of it; the manual items below are the ones a machine cannot judge.
 
-## Automated (47 checks, `apps/web/tests/`)
+## Automated (66 checks, `apps/web/tests/`)
 
 ### Consent — `lead-form.spec.ts`
 
@@ -38,6 +38,8 @@ runs all of it; the manual items below are the ones a machine cannot judge.
 |---|---|
 | No horizontal overflow — 8 pages × 375 / 768 / 1280px | pass (24) |
 | Every control on `/cover-review` has a 44px hit area at 375px | pass |
+| The sticky action bar never sits on the submit button | pass |
+| The nav collapses into a 44px disclosure below `lg`, and it opens | pass |
 
 ### Production readiness — `hardening.spec.ts`
 
@@ -94,23 +96,63 @@ Re-run against `https://execuneed-gold.vercel.app` — real network, real CDN:
 
 No accessibility or best-practice failures. This item is closed.
 
+## Colour contrast — audited against the navy palette
+
+Measured, not eyeballed: every element on the public pages with a text node of
+its own was walked at 375 / 768 / 1280, its computed colour composited over its
+first opaque ancestor background, and the WCAG 2.1 ratio calculated. Large text
+is `>= 24px`, or `>= 18.66px` at weight 700 or above.
+
+One failure came out of it and is fixed: the step numerals on the home page,
+`/how-we-work`, `/cover-review` and the lead form were `navy/40`, which is
+**2.49:1** against paper. They are `navy/65` now.
+
+| Foreground | Background | Ratio | AA normal | AA large |
+|---|---|---|---|---|
+| `ink` | `paper` | 15.91:1 | pass | pass |
+| `ink` | `sand/50` | 15.00:1 | pass | pass |
+| `ink` | `white` | 16.79:1 | pass | pass |
+| `ink-muted` | `paper` | 5.78:1 | pass | pass |
+| `ink-muted` | `sand/50` | 5.45:1 | pass | pass |
+| `ink-muted` | `sand/40` | 5.52:1 | pass | pass |
+| `ink-muted` | `white` | 6.10:1 | pass | pass |
+| `navy` | `paper` | 16.20:1 | pass | pass |
+| `navy/65` | `paper` | 5.26:1 | pass | pass |
+| `navy/65` | `sand/50` | 5.14:1 | pass | pass |
+| `navy/65` | `white` | 5.38:1 | pass | pass |
+| `danger` | `white` | 7.53:1 | pass | pass |
+| `danger` | `paper` | 7.13:1 | pass | pass |
+| `ok` | `paper` | 6.01:1 | pass | pass |
+| `warn` | `paper` | 5.60:1 | pass | pass |
+| `paper` | `navy` | 16.20:1 | pass | pass |
+| `paper/75` | `navy` | 9.51:1 | pass | pass |
+| `paper/70` | `navy` | 8.43:1 | pass | pass |
+| `paper/60` | `navy` | 6.52:1 | pass | pass |
+
+`ink-muted` on `sand` — the combination the last pass flagged as the one to
+check — is 5.45:1. It passes AA for normal text with room to spare.
+
+Nothing on the public pages is below AA. Alpha values under `navy/65` and
+`paper/60` are used for hairlines and decorative marks only, never for text.
+
 ## Manual — still to do
 
 These need a person, and several need answers from the practice first.
-- [ ] Real content pass. The pages are correct but plain — photography, spacing
-      and typographic rhythm are Deacon's next job.
-- [ ] Screen reader pass through the lead form (VoiceOver, iOS Safari).
+- [ ] **Screen reader pass through the lead form (VoiceOver, iOS Safari).**
       Automated checks cover labels and `aria-describedby`; they do not tell
-      you whether the flow makes sense out loud.
-- [ ] Colour contrast audit against the tokens, including `ink-muted` on
-      `sand`.
-- [ ] Check the footer disclaimer once the real wording exists. It currently
-      renders `NEEDS_LEGAL` placeholder text from the seed.
-- [ ] Sticky WhatsApp button — cannot be tested until a WhatsApp number is
-      confirmed. It hides itself while `whatsappE164` is empty, which is the
-      correct behaviour but means the path is unexercised. **When a number is
-      added, check it against the cookie notice**: both are fixed to the bottom
-      of the viewport and will overlap until the notice is dismissed.
+      you whether the flow makes sense out loud. This one genuinely needs a
+      handset — it has not been done and should not be ticked off on the
+      strength of the automated suite.
+- [ ] Check the footer disclaimer once the real wording exists. The slot is
+      empty in production today, which is deliberate: `discoveryJuristicText`
+      is blank and `Disclaimer` renders nothing rather than a placeholder.
+- [ ] Sticky WhatsApp button — the bar is live and tested, but the WhatsApp
+      half of it is not. `whatsappHref` returns null while `whatsappE164` is
+      empty, so the bar currently shows "Book a review" plus the phone number.
+      **When a number is added, check the WhatsApp path** and re-check the bar
+      against the cookie notice: both are fixed to the bottom of the viewport.
+      The notice is `z-50` and opaque so it covers the bar until it is
+      answered, which is the intended order, but it is worth seeing once.
 - [ ] Re-check the CSP once analytics or a chat widget is added. `connect-src`
       and `script-src` are locked to `'self'`; a third-party script will be
       blocked until its origin is added deliberately.

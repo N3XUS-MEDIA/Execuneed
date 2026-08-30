@@ -3,8 +3,29 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* The sticky mobile action bar is fixed. Pages reserve this at the end of
+       the document so it can never sit on top of a submit button. */
+    --action-bar-h: 4.5rem;
+  }
+
   html {
     -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 
   body {
@@ -13,14 +34,79 @@
 
   h1,
   h2,
-  h3 {
+  h3,
+  h4 {
     /* The wordmark is tightly set; headings echo that rather than sitting at
-       default tracking, which looks loose beside the logo. */
-    @apply font-heading tracking-tight;
+       default tracking, which looks loose beside the logo.
+       Montserrat is loaded at 600/700/800 only — an unset weight would leave
+       the browser synthesising 400 from the 600 face. */
+    @apply font-heading font-semibold tracking-tight text-balance;
+    line-height: 1.15;
+  }
+
+  p {
+    @apply text-pretty;
+  }
+
+  ::selection {
+    @apply bg-navy/15 text-ink;
   }
 
   /* docs/ui/PRIMITIVES.md — 50+ audience, large tap targets, visible focus. */
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-navy;
+    border-radius: 2px;
+  }
+}
+
+@layer components {
+  /* One hairline rule, used for section seams and small flourishes. */
+  .rule {
+    @apply h-px w-full border-0 bg-line;
+  }
+
+  /* The small-caps label that opens a section. Sets the vertical rhythm of
+     every section on the site: eyebrow, heading, lede. */
+  .eyebrow {
+    @apply font-body text-xs font-semibold uppercase tracking-[0.18em] text-ink-muted;
+  }
+
+  .eyebrow-on-navy {
+    @apply font-body text-xs font-semibold uppercase tracking-[0.18em] text-paper/60;
+  }
+
+  /* Long-form editorial and legal copy. Written out rather than pulling in the
+     typography plugin, which would bring a second type scale with it. */
+  .longform > * + * {
+    @apply mt-5;
+  }
+
+  .longform h2 {
+    @apply mt-12 text-2xl text-ink sm:text-3xl;
+  }
+
+  .longform h3 {
+    @apply mt-10 text-xl text-ink sm:text-2xl;
+  }
+
+  .longform p,
+  .longform li {
+    @apply text-lg leading-relaxed text-ink-muted;
+  }
+
+  .longform ul {
+    @apply list-disc space-y-3 pl-6;
+  }
+
+  .longform ol {
+    @apply list-decimal space-y-3 pl-6;
+  }
+
+  .longform a {
+    @apply text-navy underline underline-offset-4;
+  }
+
+  .longform blockquote {
+    @apply border-l-2 border-navy/25 pl-6 text-lg italic leading-relaxed text-ink;
   }
 }
