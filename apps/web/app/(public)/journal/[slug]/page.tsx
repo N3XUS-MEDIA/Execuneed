@@ -7,6 +7,9 @@ import { findArticle, journalArticles, journalCopy, relatedTo } from '@/content/
 import { Container } from '@/ui/layout/Container'
 import { Section } from '@/ui/layout/Section'
 import { HexRule } from '@/ui/brand/HexMark'
+import { JsonLd } from '@/ui/seo/JsonLd'
+import { articleLd, breadcrumbLd, faqLd } from '@/content/structuredData'
+import { getOrganisationSettings } from '@/server/org'
 
 export function generateStaticParams() {
   return journalArticles.map((a) => ({ slug: a.slug }))
@@ -46,9 +49,23 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   if (!article) notFound()
 
   const related = relatedTo(article)
+  const org = await getOrganisationSettings()
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL
+  const publisher = org?.tradingName ?? copy.brand.name
 
   return (
     <>
+      <JsonLd data={articleLd(article, { baseUrl, publisher })} />
+      <JsonLd data={faqLd(article)} />
+      <JsonLd
+        data={breadcrumbLd(
+          [
+            { name: journalCopy.title, path: '/journal' },
+            { name: article.title, path: `/journal/${article.slug}` },
+          ],
+          baseUrl,
+        )}
+      />
       <div className="border-b border-line bg-gradient-to-b from-sand/60 to-paper">
         <Container width="narrow">
           <div className="py-14 sm:py-20">

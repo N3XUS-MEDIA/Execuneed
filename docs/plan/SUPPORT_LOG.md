@@ -70,10 +70,11 @@ Deacon / Support Claude appends here each session. Do not replace Lead plan file
   - `app/sitemap.ts` lists five paths. It does not include `/services/[slug]`
     (already live) or the journal. That is your file — say the word and I will
     send a patch, or you can add them when indexing is switched on.
-  - No JSON-LD on the articles. `script-src` in `src/server/securityHeaders.ts`
-    is `'self'` with no `unsafe-inline`, so an inline `application/ld+json`
-    block would be blocked by CSP. Article and FAQ schema is worth having for
-    the GEO goal in §6.1, but it needs a CSP decision from you first.
+  - ~~No JSON-LD on the articles, because CSP would block it.~~ **Wrong, and
+    corrected on 2026-08-30 (8).** Production `script-src` is
+    `'self' 'unsafe-inline'`, verified against the response headers on the live
+    site. Nothing was blocked and no CSP decision was needed. The structured
+    data is now in.
   - A ninth article on short-term cover — "short-term cover renews itself,
     which is the problem" — is the obvious next one. The Short-term services
     category has no journal article. I did not write it into this PR because
@@ -197,3 +198,35 @@ _None yet._
   `docs/ui/QA_CHECKLIST.md`.
 - Still open: the VoiceOver pass on iOS Safari. It needs a handset.
 - Not mine: `ALLOW_INDEXING` stays unset until `CLIENT_ANSWERS.md` is filled in.
+
+### 2026-08-30 (8)
+- Claimed: structured data and the sitemap, once the P2 work was merged.
+- Correction first: I told Jared in #22 and in entry (2) above that JSON-LD was
+  blocked by the CSP because `script-src` was `'self'`. It is
+  `'self' 'unsafe-inline'` in production — checked against the live response
+  headers rather than from memory this time. Nothing was blocked, no CSP change
+  was needed, and the GEO work in §6.1 was never actually waiting on Lead.
+- Done:
+  - `FinancialService` on the home page, `Article` + `FAQPage` +
+    `BreadcrumbList` on every journal article. The FAQ blocks are the piece
+    §6.1 actually wants — they are the questions a person types, with the
+    answers already on the page.
+  - Two rules enforced by tests. Nothing unconfirmed: `legalName`, the FSP
+    number and the NCR number are never emitted, because they are still
+    placeholders and a placeholder legal name in structured data is a
+    machine-readable false statement about a licensed practice. And nothing
+    new: every string already exists on the rendered page, so it has already
+    been through the compliance gate. The product-claim regex from
+    `journal.test.ts` runs against the FAQ data too.
+  - `dateModified` only, no `datePublished`. The content files record when an
+    article was last reviewed, not when it went up, and inventing a date to
+    satisfy a rich-result checklist is still inventing one.
+  - The sitemap listed five paths while sixteen were live — it never picked up
+    the category pages or the journal. The paths are derived now, and moved to
+    `src/content/sitemapPaths.ts` so they can be tested; `app/sitemap.ts` is a
+    thin wrapper over it. Six tests exist purely so it cannot fall behind the
+    site again.
+- Review: `feat/structured-data`. 150 unit and 91 Playwright tests green.
+- Note: the structured data renders whether or not `ALLOW_INDEXING` is set. It
+  is inert while the site is `noindex`, and it means nothing further has to be
+  remembered on the day indexing is switched on.

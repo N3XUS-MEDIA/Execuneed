@@ -468,6 +468,18 @@ because it looks interesting — that is the failure mode the brief names.
     corpus that has actually been through Discovery Marketing Support. There
     is no approved content yet, so the RAG half has nothing to read.
 
+    2026-08-30, on Deacon's instruction: the **capture half only** shipped in
+    PR #24, as `apps/web/src/ui/concierge/`. Launcher, panel, capture through
+    `createLeadAction` with consent captured exactly as the web form captures
+    it, and the §Public AI disclaimer. It is a fixed script — no model, no
+    retrieval — and it answers nothing, which is this ticket's own stated
+    default while the corpus is empty. A typed question is carried into the
+    enquiry as the message, never answered.
+
+    This ticket stays `backlog` and stays Lead's. The answering half is still
+    blocked on P2-L-039 and on an approved corpus. `AI_PUBLIC_ENABLED` is
+    untouched and still false.
+
 ### P2-L-035
 - owner: lead | status: backlog
 - title: Calculator engines (education only)
@@ -501,12 +513,32 @@ because it looks interesting — that is the failure mode the brief names.
 - title: Vault upload UI
 
 ### P2-S-043
-- owner: support | status: ready
+- owner: support | status: done
 - title: Journal article templates (8 cornerstone)
+- landed: PR #22, merged 2026-08-30
+- notes: |
+    Nine shipped, not eight. Seven are the §6.1 topics; the eighth and ninth
+    are changing jobs, and short-term cover on autopilot, the latter added on
+    Deacon's instruction so that every services category has an article behind
+    it. `journal.test.ts` now asserts that coverage.
+
+    "Discovery integration discounts explained" is published with its body
+    empty behind `NeedsApproval` and a page explaining why. It is the one §6.1
+    topic that cannot be written without stating a Discovery benefit.
 
 ### P2-S-044
-- owner: support | status: ready
+- owner: support | status: done
 - title: Digest email HTML
+- landed: PR #23, merged 2026-08-30
+- notes: |
+    Template only, per the handoff. `renderDigestHtml` and `digestSubject` in
+    `apps/web/src/ui/email/digest.ts`, with fifteen tests. Nothing in
+    `src/server` was touched, so `runDailyDigest` still returns the plain-text
+    body and nothing calls this yet — Lead wires it when there is a transport.
+
+    The digest cannot show consent state, which is what Denise would most want
+    beside a name. `recentLeads` does not include `consents`; one line in that
+    query and the badge can be added.
 
 ### P2-S-045
 - owner: support | status: backlog

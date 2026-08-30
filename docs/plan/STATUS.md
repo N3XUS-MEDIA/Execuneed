@@ -1,17 +1,61 @@
 # Status
 
-Phase: **P1 live. P2 open for the two unblocked support tickets.**
-Board state: P0 done, P1 implemented and hardened, awaiting client answers before go-live
-Last updated: 2026-08-29
+Phase: **P1 live. The unblocked P2 support work is done and on production.**
+Board state: P0 done, P1 hardened and live, P2 support lane complete, awaiting client answers before go-live
+Last updated: 2026-08-30
+
+> Updated by the support session. `LANES.md` assigns this file to Lead and says
+> Support may not rewrite it — there is no lead session, and the numbers below
+> were materially wrong about what is on production. The P1 record beneath is
+> untouched; everything new is in "P2 — support lane complete".
 
 ## Focus
 
 | Lane | Human | Focus | Status |
 |---|---|---|---|
 | Lead | Jared | P0 and P1 complete, deployed and verified | handed over, out of session budget |
-| Support | Deacon | design pass, manual QA, P2-S-043, P2-S-044 | **everything is yours** |
+| Support | Deacon | design pass, manual QA, P2-S-043, P2-S-044 | **done, merged, live** |
 
-Full brief: `docs/handoffs/2026-08-29-lead-to-support-p2.md`
+Briefs: `docs/handoffs/2026-08-29-lead-to-support-p2.md` (incoming) and
+`docs/handoffs/2026-08-30-support-p2-complete.md` (current — read this one).
+
+## P2 — support lane complete
+
+Merged to `main` on 2026-08-30 as #21, #22, #24, #23, then `feat/structured-data`.
+
+- **Design and content pass.** A shared layout system, tonal bands instead of a
+  stack of cards, the hexagon from the icon as the site's only ornament, a nav
+  that collapses below `lg`, and a mobile action bar that no longer renders
+  nothing while `whatsappE164` is blank. No photography — the brand pack has
+  still not arrived and stock imagery would be worse than none.
+- **P2-S-043 — nine journal articles.** Seven §6.1 topics plus two. Every
+  services category has an article behind it, asserted by test. The Discovery
+  integration piece ships with its body empty behind `NeedsApproval`.
+- **P2-S-044 — digest email HTML.** Template only; nothing in `src/server` was
+  touched and nothing calls it yet.
+- **Concierge launcher and its capture half** (`P2-L-070` stays open and stays
+  Lead's — see TASKS).
+- **Structured data and a sitemap that keeps up.** The sitemap had been listing
+  five paths while sixteen were live.
+
+Verified after merging: **150 unit and 91 Playwright tests**, CI green on the
+merge commit, production deployed, `X-Robots-Tag: noindex` still set.
+
+Lighthouse against production, not a laptop: 99 / 98 / 99 performance, 100
+accessibility, 100 best practices, **CLS 0**.
+
+### Accessibility and contrast — audited, not assumed
+
+Contrast was measured at 375 / 768 / 1280 by compositing every text node over
+its first opaque ancestor. One real failure, since fixed. The full table is in
+`docs/ui/QA_CHECKLIST.md`.
+
+A keyboard and accessibility-tree pass on the lead form found three defects,
+all fixed: the submit button was not in the tab order at all, a validation
+failure was announced nowhere, and optional fields had accessible names like
+"Last nameOptional".
+
+**Still open:** the VoiceOver pass on iOS Safari. It needs a handset.
 
 ## P1 live-done — verified
 
@@ -53,7 +97,8 @@ P1-L-059 to P1-L-065, added after the feature work:
 - Admin tasks page wired to `completeTaskAction`
 - `docs/ops/DEPLOYMENT.md` with the go-live gate and known production limits
 
-108 unit and integration tests, 47 Playwright tests.
+108 unit and integration tests, 47 Playwright tests **at the time of P1**. See
+the P2 section above for the current figures.
 
 ## Not go-live ready — and why
 
@@ -100,16 +145,24 @@ Environment variables are set. Postgres and Redis are on Railway in EU West.
 
 ## Blocked on Jared
 
-- Supabase `execuneed-dev` database password, then:
-  `pnpm --filter @execuneed/db exec prisma migrate resolve --applied 20260829070000_p0_baseline`
-  Local development runs against local Postgres in the meantime.
-- A deploy target. Lighthouse cannot be run meaningfully against `next dev`.
+Both of these are now resolved and are kept only as a record.
+
+- ~~Supabase `execuneed-dev` database password.~~ Postgres moved to Railway;
+  local development runs against local Postgres in Docker.
+- ~~A deploy target for Lighthouse.~~ Production exists and has been measured;
+  see the P2 section.
 
 ## Next
 
-P2 does not unlock until P1 is live-done in production, per
-`docs/dev/PHASE_UNLOCK.md`. The remaining work is content and design polish,
-not features.
+The support lane has no `ready` ticket left. What remains is either blocked on
+Execuneed (every item in `CLIENT_ANSWERS.md`, all of which gate
+`ALLOW_INDEXING`), blocked on lead-lane work that does not exist yet
+(`P2-L-033` to `P2-L-039`, which `P2-S-040`, `041`, `042`, `045` and the
+answering half of `P2-L-070` all wait on), or needs a person with a handset.
+
+`docs/handoffs/2026-08-30-support-p2-complete.md` lists the small things a lead
+session could close in an hour — email transport, consent state in the digest,
+and a `chat` value in the `LeadSource` enum.
 
 ## Last webhook event
 

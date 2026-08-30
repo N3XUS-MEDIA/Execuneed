@@ -1,23 +1,22 @@
 import type { MetadataRoute } from 'next'
+import { sitemapPaths, sitemapPriority } from '@/content/sitemapPaths'
 
 /**
  * P1-L-063 — sitemap.
  *
  * Empty while ALLOW_INDEXING is false, so a stray crawl finds nothing to take.
- * Legal pages are never listed: they are noindex unconditionally until the
- * practice confirms their wording.
+ * The paths themselves are derived in `@/content/sitemapPaths`, where they can
+ * be tested; a hand-kept list here had already gone stale twice.
  */
-const PUBLIC_PATHS = ['', '/how-we-work', '/services', '/cover-review', '/contact']
-
 export default function sitemap(): MetadataRoute.Sitemap {
   const allowIndexing = process.env.ALLOW_INDEXING === 'true'
   const base = process.env.NEXT_PUBLIC_APP_URL
 
   if (!allowIndexing || !base) return []
 
-  return PUBLIC_PATHS.map((path) => ({
+  return sitemapPaths().map((path) => ({
     url: `${base}${path}`,
     changeFrequency: 'monthly' as const,
-    priority: path === '' ? 1 : path === '/cover-review' ? 0.9 : 0.7,
+    priority: sitemapPriority(path),
   }))
 }
