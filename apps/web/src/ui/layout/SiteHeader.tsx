@@ -12,6 +12,7 @@ const links = [
   { href: '/how-we-work', label: copy.nav.how },
   { href: '/services', label: copy.nav.services },
   { href: '/cover-review', label: copy.nav.review },
+  { href: '/journal', label: copy.nav.journal },
   { href: '/contact', label: copy.nav.contact },
 ]
 

@@ -14,6 +14,7 @@ Tone: calm, Cape Town professional, family-first. No scare tactics. No fake urge
 | nav.how | final | How we work |
 | nav.services | final | Services |
 | nav.review | final | Cover review |
+| nav.journal | final | Journal |
 | nav.contact | final | Contact |
 | cta.review | final | Book a complimentary cover review |
 | cta.whatsapp | final | Message us on WhatsApp |

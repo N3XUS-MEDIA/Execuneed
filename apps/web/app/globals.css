@@ -81,8 +81,23 @@
     @apply mt-5;
   }
 
+  /* Journal articles wrap each heading and its paragraphs in a <section>, so
+     the child combinator above only ever saw the sections. Without this,
+     consecutive paragraphs inside one section ran together. */
+  .longform section > * + * {
+    @apply mt-5;
+  }
+
+  .longform section + section {
+    @apply mt-12;
+  }
+
   .longform h2 {
     @apply mt-12 text-2xl text-ink sm:text-3xl;
+  }
+
+  .longform section > h2:first-child {
+    @apply mt-0;
   }
 
   .longform h3 {

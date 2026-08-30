@@ -18,6 +18,7 @@ export const copy = {
     how: 'How we work',
     services: 'Services',
     review: 'Cover review',
+    journal: 'Journal',
     contact: 'Contact',
   },
   cta: {

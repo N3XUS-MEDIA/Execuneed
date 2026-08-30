@@ -5,7 +5,7 @@ Owner: Support. Re-run before any release that touches public pages.
 Most of this is automated. `pnpm --filter @execuneed/web exec playwright test`
 runs all of it; the manual items below are the ones a machine cannot judge.
 
-## Automated (66 checks, `apps/web/tests/`)
+## Automated (79 checks, `apps/web/tests/`)
 
 ### Consent — `lead-form.spec.ts`
 
@@ -19,6 +19,10 @@ runs all of it; the manual items below are the ones a machine cannot judge.
 | Landline in the mobile field is rejected on the field | pass |
 | **A validation error does not wipe what the visitor typed** | pass |
 | Public pages send `X-Robots-Tag: noindex` | pass |
+| The blocked submit button is still reachable from the keyboard, and says why | pass |
+| Pressing the blocked submit moves focus to the consent box | pass |
+| A validation failure is announced, and focus moves to the field | pass |
+| Optional fields do not run their label into the word "optional" | pass |
 | Anonymous visitors are redirected away from `/admin` | pass |
 
 ### P1 live-done — `admin.spec.ts`
@@ -36,7 +40,7 @@ runs all of it; the manual items below are the ones a machine cannot judge.
 
 | Check | Status |
 |---|---|
-| No horizontal overflow — 8 pages × 375 / 768 / 1280px | pass (24) |
+| No horizontal overflow — 11 pages × 375 / 768 / 1280px | pass (33) |
 | Every control on `/cover-review` has a 44px hit area at 375px | pass |
 | The sticky action bar never sits on the submit button | pass |
 | The nav collapses into a 44px disclosure below `lg`, and it opens | pass |
@@ -84,6 +88,44 @@ Three real issues came out of the first run and are fixed:
 - No Open Graph tags, so a link shared on WhatsApp or LinkedIn rendered as a
   bare URL. Added, without an image — a stock placeholder would be worse than
   none.
+
+### Re-run after the P2 design pass
+
+Same method, local production build, `next start` on :3300. Run against the
+design pass and the journal together, and against `main` on the same machine
+minutes apart so the comparison means something.
+
+| Page | Performance | Accessibility | Best practices | LCP | CLS |
+|---|---|---|---|---|---|
+| `/` | 96 | 100 | 100 | 2.7s | 0 |
+| `/cover-review` | 97 | 100 | 100 | 2.7s | 0 |
+| `/services` | 97 | 100 | 100 | 2.7s | 0 |
+| `/contact` | 96 | 100 | 100 | 2.7s | 0 |
+| `/journal` | 97 | 100 | 100 | 2.7s | 0 |
+
+`main` measured 96 with CLS 0 on `/` in the same session, so the redesign is
+level on performance and unchanged on accessibility.
+
+**The run earned its keep.** The first pass came back at 72–73 with a
+**0.563 CLS** on `/`, `/services`, `/cover-review` and `/journal`, and clean on
+`/how-we-work`, `/legal/privacy` and `/cover-review/thanks`. The length
+correlation was the clue.
+
+`export const revalidate = 300` on the public layout — added so the practice can
+change the footer's legal wording without a deploy — stops those pages being
+purely static. On a cold cache Next streams the shell and uses `loading.tsx` as
+the fallback, so the first paint was a ~460px skeleton with the footer directly
+beneath it. The real pages are 4,000–5,000px, and the footer then dropped a full
+viewport height. The Lighthouse filmstrip showed it directly: one frame of
+skeleton-plus-footer, the next of the real page.
+
+`app/(public)/loading.tsx` was removed rather than resized. No honest skeleton
+can reserve the height of these pages, and they are prerendered, so there is
+nothing slow for one to cover. The admin segment keeps its own `loading.tsx`,
+where the pages really do wait on a query.
+
+Worth repeating on the deployment once this is merged — a cold ISR cache behaves
+differently behind a CDN than it does on a laptop.
 
 ### Confirmed on the live deployment
 
@@ -139,10 +181,11 @@ Nothing on the public pages is below AA. Alpha values under `navy/65` and
 
 These need a person, and several need answers from the practice first.
 - [ ] **Screen reader pass through the lead form (VoiceOver, iOS Safari).**
-      Automated checks cover labels and `aria-describedby`; they do not tell
-      you whether the flow makes sense out loud. This one genuinely needs a
-      handset — it has not been done and should not be ticked off on the
-      strength of the automated suite.
+      Still open, and still needs a handset. See the keyboard and
+      accessibility-tree pass below for what was done instead — not a
+      substitute, but it found and fixed three real defects, so the VoiceOver
+      run is now about whether the flow *reads well* rather than whether it is
+      navigable at all.
 - [ ] Check the footer disclaimer once the real wording exists. The slot is
       empty in production today, which is deliberate: `discoveryJuristicText`
       is blank and `Disclaimer` renders nothing rather than a placeholder.
@@ -156,6 +199,43 @@ These need a person, and several need answers from the practice first.
 - [ ] Re-check the CSP once analytics or a chat widget is added. `connect-src`
       and `script-src` are locked to `'self'`; a third-party script will be
       blocked until its origin is added deliberately.
+
+## Keyboard and accessibility-tree pass — lead form
+
+Not a screen reader pass, and not a substitute for one. It walks the form the
+way assistive technology does — every tab stop in order, with each control's
+accessible name, its required and invalid state, and whatever its
+`aria-describedby` actually resolves to — then does the same again after a
+failed submission.
+
+Three defects came out of it, all fixed and now covered by tests.
+
+**The submit button was not in the tab order at all.** It carried `disabled`,
+so a keyboard user went from the last consent checkbox straight to the phone
+number in the sidebar. They never met the button, and never heard the sentence
+explaining why it would not work — the sentence was attached to it with
+`aria-describedby`, on an element that could not be focused.
+
+It is `aria-disabled` now. Still announced as disabled, and
+`expect(submit).toBeDisabled()` still passes, but reachable and it says why.
+The consent gate is unchanged and enforced in three places: the submit handler,
+`createLeadSchema` (`contactForEnquiry: z.literal(true)`), and again at the
+point of the write. Pressing it while blocked moves focus to the consent box.
+
+**A validation failure was silent.** Field errors render beside their input,
+invisible to anyone not looking at the screen, and focus stayed on the submit
+button — so pressing it appeared to do nothing. The live region now carries the
+summary and focus moves to the first invalid control, which reads its own
+message out of `aria-describedby`.
+
+**Optional fields read as one word.** The accessible name of the last name
+field was literally "Last nameOptional". Same for suburb and children at home.
+They read "Last name — optional" now.
+
+What a VoiceOver run on a handset would still add: whether the three numbered
+steps help or interrupt, whether the consent wording is clear read aloud, and
+how the sticky action bar behaves with the rotor. Those are judgements, not
+assertions.
 
 ## Blocked on the practice
 
