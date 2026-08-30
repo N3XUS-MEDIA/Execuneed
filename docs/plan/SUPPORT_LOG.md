@@ -44,3 +44,37 @@ Deacon / Support Claude appends here each session. Do not replace Lead plan file
 - Notes: no photography, no second palette, no second button. Copy is unchanged
   — every sentence still comes from `content/copy.ts` or `content/products.ts`.
 
+
+### 2026-08-30 (2)
+- Claimed: P2-S-043, journal article templates.
+- Done:
+  - Eight cornerstone articles under `apps/web/src/content/journal/`, plus
+    `/journal` and `/journal/[slug]`.
+  - Seven of the eight are the topics in
+    `docs/product/EXECUNEED_AI_PLATFORM_PLAN.md` §6.1. The eighth — changing
+    jobs and the cover you had at work — is mine, chosen because it has real
+    search intent and lands the reader on the retirement and protection
+    articles.
+  - The ninth §6.1 topic, Discovery integration, is published with its body
+    empty behind `NeedsApproval` and an explanation of why. It is the one topic
+    on the list that cannot be written without stating a Discovery benefit.
+  - `journal.test.ts` carries the same gate as `products.test.ts`, plus a check
+    that no article reads as a recommendation.
+  - Articles that state a figure from legislation or scheme rules carry a
+    `figuresNote`, rendered on the page, so the reader and the practice both
+    know what has to be re-checked.
+- Review: `feat/P2-S-043-journal`, stacked on `feat/P2-design-pass`.
+  117 unit and 75 Playwright tests green.
+- Blocked: nothing.
+- Notes for Lead:
+  - `app/sitemap.ts` lists five paths. It does not include `/services/[slug]`
+    (already live) or the journal. That is your file — say the word and I will
+    send a patch, or you can add them when indexing is switched on.
+  - No JSON-LD on the articles. `script-src` in `src/server/securityHeaders.ts`
+    is `'self'` with no `unsafe-inline`, so an inline `application/ld+json`
+    block would be blocked by CSP. Article and FAQ schema is worth having for
+    the GEO goal in §6.1, but it needs a CSP decision from you first.
+  - A ninth article on short-term cover — "short-term cover renews itself,
+    which is the problem" — is the obvious next one. The Short-term services
+    category has no journal article. I did not write it into this PR because
+    the ticket says eight.

@@ -5,7 +5,7 @@ Owner: Support. Re-run before any release that touches public pages.
 Most of this is automated. `pnpm --filter @execuneed/web exec playwright test`
 runs all of it; the manual items below are the ones a machine cannot judge.
 
-## Automated (66 checks, `apps/web/tests/`)
+## Automated (75 checks, `apps/web/tests/`)
 
 ### Consent — `lead-form.spec.ts`
 
@@ -36,7 +36,7 @@ runs all of it; the manual items below are the ones a machine cannot judge.
 
 | Check | Status |
 |---|---|
-| No horizontal overflow — 8 pages × 375 / 768 / 1280px | pass (24) |
+| No horizontal overflow — 11 pages × 375 / 768 / 1280px | pass (33) |
 | Every control on `/cover-review` has a 44px hit area at 375px | pass |
 | The sticky action bar never sits on the submit button | pass |
 | The nav collapses into a 44px disclosure below `lg`, and it opens | pass |

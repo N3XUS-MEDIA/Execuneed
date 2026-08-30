@@ -8,6 +8,11 @@ This is that record. It is also the thing a key individual will ask for.
 
 ## How the gate works
 
+Two places carry gated copy: the product categories in
+`apps/web/src/content/products.ts`, and the journal articles in
+`apps/web/src/content/journal/`. Both use the same field names and the same
+component, so there is one rule to remember rather than two.
+
 Each category in `apps/web/src/content/products.ts` carries two fields:
 
 | Field | Renders | Contains |
@@ -35,6 +40,18 @@ from the practice's own brief; the wording is ours.
 | Car and home | — | Not requested | — | — | — |
 | Banking and Vitality | — | Not requested | — | — | — |
 | Employers and group benefits | — | Not requested | — | — | — |
+
+### Journal articles
+
+| Article | `approvalRef` | Status | Requested | Approved by | Date |
+|---|---|---|---|---|---|
+| How Discovery integration works | — | Not requested | — | — | — |
+
+`how-discovery-integration-works` is the one article on the site whose whole
+subject needs approval. It is published with its body deliberately empty and an
+explanation of why — see `apps/web/src/content/journal/articles-gated.ts`. The
+seven other articles carry no product claim at all and their `claims` arrays are
+empty for that reason rather than because approval is pending.
 
 Nothing has been submitted, because `docs/product/CLIENT_ANSWERS.md` still has
 no Discovery Marketing Support contact.
